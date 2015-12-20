@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cinema</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="{% static 'css/cinema.css' %}"/>
+        <link rel="stylesheet" href="{% static 'contrib/font-awesome-4.5.0/css/font-awesome.min.css'%}" />
+    </head>
+    <body>
+        <div class="movie_list">
+        {% for movie in movies %}
+                <div class="movie">
+                    <div class="poster_container">
+                    {% if movie.poster %}
+                        <div class="poster" style="background-image: url('{{ movie.poster.url }}');">
+                    {% else %}
+                        <div class="poster">
+                    {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="overlay">
+                        <h4>{{ movie.title }}</h4>
+                        <div class="actions">
+                            <a href="{% url 'watch' mid=movie.pk %}"><i class="fa fa-eye"></i></a>
+                            <a href="#"><i class="fa fa-download"></i></a>
+                        </div>
+                    </div>
+                </div>
+        {% endfor %}
+        </div>
+    </body>
+</html>

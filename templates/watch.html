@@ -1,0 +1,10 @@
+{% extends 'base.html'%}
+
+{% block main %}
+<div class="video_container">
+    <video controls>
+        <source src="{{ movie.path_to_static }}" type="video/mp4">
+    </video>
+</div>
+<h1><a href="{% url 'index' %}" class="back_link"><i class="fa fa-chevron-left"></i></a> {{ movie.title }}</h1>
+{% endblock %}
