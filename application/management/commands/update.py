@@ -2,6 +2,7 @@ import os
 import re
 import json
 import datetime
+from guessit import guess_movie_info
 from urllib.request import urlopen
 from urllib.parse import urlencode
 from django.core.management.base import BaseCommand
@@ -14,33 +15,14 @@ MOVIES_EXT = [
     '.mkv',
 ]
 
-UPLOADERS = [
-    'yify',
-    'judas',
-    'anoxmous_',
-    'aac-rarbg',
-    'bokutox',
-    'deceit',
-    'web-dl',
-]
-
-
 class API:
-    def clean_name(self, name):
-        name = name.lower()
-        name = re.sub('1080p|720p', '', name)
-        name = re.sub('bluray|brrip|brrip', '', name)
-        name = re.sub('|'.join(UPLOADERS), '', name)
-        name = re.sub('x264|H264|\+hi|aac|h.264', '', name, re.IGNORECASE)
-        name = re.sub('5.1|7.1', '', name)
-        name = re.sub('(19|20)[0-9]{2}', '', name)
-        name = re.sub('extended|remastered', '', name)
-        name = re.sub('\.', ' ', name)
-        return name.strip()
 
     def search(self, name):
-        name = self.clean_name(name)
-        params = urlencode({'s': name, 'r': 'json'})
+        infos = guess_movie_info(name)
+        try:
+            params = urlencode({'s': infos['title'], 'y': infos['year'], 'type': 'movie', 'r': 'json'})
+        except KeyError:
+            params = urlencode({'s': infos['title'], 'type': 'movie', 'r': 'json'})
         url = 'http://www.omdbapi.com/?%s' % params
         with urlopen(url) as request:
             resp = json.loads(request.read().decode())
@@ -81,7 +63,6 @@ class Crawler:
         try:
             for m in match:
                 poster_name = self.save_poster(m['poster'])
-                os.symlink(path, os.path.join(settings.MEDIA_ROOT, 'films', os.path.basename(path)))
                 Movie.objects.create(
                     title=m['title'],
                     path=path,
@@ -91,6 +72,7 @@ class Crawler:
                 )
                 return
             else:
+                name = guess_movie_info(name)['title']
                 Movie.objects.create(
                     title=name,
                     path=path,
@@ -106,6 +88,13 @@ class Crawler:
             with open(os.path.join(settings.MEDIA_ROOT, "posters", filename), "wb") as f:
                 f.write(request.read())
                 return filename
+
+    def symlink(self, path):
+        destination = os.path.join(settings.MEDIA_ROOT, 'films', os.path.basename(path))
+        if os.path.islink(destination):
+            print("Removed old link")
+            os.remove(destination)
+        os.symlink(path, destination)
 
 
 class Command(BaseCommand):
