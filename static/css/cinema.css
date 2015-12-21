@@ -18,6 +18,123 @@ body{
     min-height: 100%;
 }
 
+.flex_container{
+    display: flex;
+}
+
+.flex_container.column{
+    flex-flow: row;
+}
+
+#login_container{
+    margin: 0 1em;
+    position: absolute;
+    text-align: right;
+    top: 1em;
+    left: 2em;
+    width: calc(100% - 6em);
+}
+#login_container a{
+    color: hsla(0,100%,100%,0.15);
+    font-weight: bold;
+    text-decoration: none;
+}
+#login_container a:hover{
+    color: hsla(0,100%,100%,0.25);
+}
+
+#side_container{
+    margin: 1em;
+    width: 250px;
+    max-width: 250px;
+    min-width: 250px;
+    flex: 1 1 250px;
+    display: flex;
+    flex-flow: column;
+    background-color: hsla(0,100%,100%,0.025);
+}
+
+#profile_picture{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#main_container{
+    margin: 1em;
+    flex: 1 1 auto;
+}
+
+#retract_btn{
+    display: block;
+    width: 100%;
+    padding: 1em;
+    text-align: center;
+    background-color: hsla(0,100%,100%,0.025);
+    color: #888;
+}
+
+#retract_btn:hover{
+    background-color: hsla(0,100%,100%,0.075);
+    color: white;
+}
+
+#user_actions{
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    background-color: hsla(0,100%,100%,0.025);
+}
+
+
+#user_actions a{
+    display: block;
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 1em;
+    color: #888;
+}
+
+#user_actions a:hover{
+    background-color: hsla(0,100%,100%,0.075);
+    color: white;
+}
+
+#watchlist{
+    padding: 2em;
+}
+
+#watchlist h4{
+    color: #888;
+    padding: 0;
+    margin: 0;
+}
+
+#watchlist h4 a{
+    color: #888;
+    float: right;
+    display: inline-block;
+}
+
+#watchlist hr{
+    color: none;
+    border: none;
+    border-bottom: 1px solid hsla(0, 100%, 100%, 0.075);
+}
+
+#search{
+    background-color: hsla(0,100%,100%,0.05);
+    border: none;
+    font-weight: bold;
+    color: #aaa;
+    padding: 1em;
+    width: 100%;
+    margin: 0 0 1em 0;
+}
+
+#search:focus{
+    background-color: hsla(0,100%,100%,0.075);
+}
 
 .movie_list{
     display: flex;
@@ -100,6 +217,10 @@ body{
     background-color: hsla(0, 100%, 100%, 0.25);
     text-decoration: none;
     flex: 1 1 auto;
+}
+
+.actions a:hover{
+    background-color: hsla(0, 100%, 100%, 0.35);
 }
 
 

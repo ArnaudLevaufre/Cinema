@@ -8,7 +8,32 @@
         <link rel="stylesheet" href="{% static 'contrib/font-awesome-4.5.0/css/font-awesome.min.css'%}" />
     </head>
     <body>
-        {% block main %}
-        {% endblock %}
+        <div id="login_container">
+            <a href="#"><i class="fa fa-user"></i> Login</a>
+        </div>
+        <div class="flex_container column">
+            <div id="main_container">
+                {% block main %}
+                {% endblock %}
+            </div>
+
+            {% if False %}
+
+            <div id="side_container">
+                <a href="#" id="retract_btn"><i class="fa fa-chevron-right"></i></a>
+                <img id="profile_picture" src="http://img1.mxstatic.com/wallpapers/1ee63d0d82faaebfb7108a7190eaf3bc_large.jpeg"/>
+                <div id="user_actions">
+                    <a href="#"><i class="fa fa-user"></i></a>
+                    <a href="#"><i class="fa fa-power-off"></i></a>
+                </div>
+                <div id="watchlist">
+                    <h4>Watchlist <a href="#"><i class="fa fa-play-circle" title="Play all"></i></a></h4>
+                    <hr/>
+
+                </div>
+            </div>
+
+            {% endif %}
+        </div>
     </body>
 </html>
