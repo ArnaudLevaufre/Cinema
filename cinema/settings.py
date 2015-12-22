@@ -52,6 +52,7 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'cinema.urls'
+LOGIN_REDIRECT_URL = "/"
 
 TEMPLATES = [
     {

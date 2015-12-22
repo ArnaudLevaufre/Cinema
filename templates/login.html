@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Login</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="{% static 'css/login.css' %}" />
+		<link rel="stylesheet" href="{% static 'contrib/font-awesome-4.5.0/css/font-awesome.min.css' %}" >
+	</head>
+	<body>
+		<main>
+			<h1>Login</h1>
+			<form method="POST" action="{% url 'login' %}">
+				{% csrf_token %}
+                <input type="hidden" name='next' value='{{ next }}'>
+				<div class="flex">
+                    {{ form.username }}
+                    <label for="{{ form.username.id_for_label }}"><i class="fa fa-user"></i></label>
+				</div>
+				<div class="flex">
+                    {{ form.password }}
+                    <label for="{{ form.password.id_for_label }}"><i class="fa fa-unlock-alt"></i></label>
+				</div>
+				<button>Login <i class="fa fa-chevron-right" ></i></button>
+			</form>
+		</main>
+	</body>
+</html>
+

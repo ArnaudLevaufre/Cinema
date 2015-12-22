@@ -16,7 +16,6 @@ MOVIES_EXT = [
 ]
 
 class API:
-
     def search(self, name):
         infos = guess_movie_info(name)
         try:

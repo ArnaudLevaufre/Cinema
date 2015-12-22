@@ -1,0 +1,87 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #2c3a3f;
+    align-items: center;
+    justify-content: center;
+}
+
+main {
+    width: 300px;
+}
+
+h1 {
+    font-family: Biolinum;
+    color: #888;
+    font-weight: normal;
+    margin: 0.5em 0;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+label {
+    color: #666;
+    width: 30px;
+    text-align: right;
+    transition: color 0.25s;
+}
+
+input {
+    display: inline-block;
+    width: 100%;
+    background-color: hsla(0,100%,100%,0.05);
+    border: none;
+    margin: 0.5em 0;
+    padding: 0.5em 1em;
+    color: #888;
+    transition: background-color 0.25s;
+}
+
+input:focus + label {
+    color: white;
+}
+
+input:focus {
+    background-color: hsla(0,100%,100%,0.075);
+}
+
+button {
+    background-color: hsla(0,100%,100%,0.05);
+    border: none;
+    margin: 0.5em 0;
+    border-radius: 3px;
+    color: #888;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.25s, color 0.25s;
+}
+
+button:hover{
+    background-color: hsla(0,100%,100%,0.075);
+    color: white;
+}
+
+button:hover i {
+    margin-left: 2em;
+}
+
+
+button i {
+    vertical-align: middle;
+    margin-left: 1em;
+    transition: margin 0.25s;
+}

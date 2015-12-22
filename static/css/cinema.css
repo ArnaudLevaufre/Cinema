@@ -26,6 +26,10 @@ body{
     flex-flow: row;
 }
 
+.flex_container .center{
+    align-items: center;
+}
+
 #login_container{
     margin: 0 1em;
     position: absolute;
@@ -39,6 +43,7 @@ body{
     font-weight: bold;
     text-decoration: none;
 }
+
 #login_container a:hover{
     color: hsla(0,100%,100%,0.25);
 }
