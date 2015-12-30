@@ -59,6 +59,12 @@ body{
     background-color: hsla(0,100%,100%,0.025);
 }
 
+#side_container.retracted{
+    width: 50px;
+    max-width: 50px;
+    min-width: 50px;
+}
+
 #profile_picture{
     width: 100%;
     margin: 0;
@@ -134,7 +140,7 @@ body{
     color: #aaa;
     padding: 1em;
     width: 100%;
-    margin: 0 0 1em 0;
+    margin: 1em 1em 1em 1em;
 }
 
 #search:focus{
@@ -145,12 +151,15 @@ body{
     display: flex;
     justify-content: center;
     flex-flow: row wrap;
+    margin: -1em;
 }
 
 .movie{
     display: inline-block;
+    flex: 1 1 auto;
     margin: 1em;
-    width: 200px;
+    min-width: 175px;
+    max-width: 225px;
     height: 300px;
     position: relative;
     overflow: hidden;
@@ -199,7 +208,7 @@ body{
 }
 
 .overlay h4{
-    width: 200px;
+    width: 100%;
     color: hsla(0, 100%, 100%, 0.75);
     margin: 0;
     padding: 2em 1em;
