@@ -4,8 +4,13 @@
 
 {% block main %}
     <div class="movie_list">
-        <input type="text" name="search" id="search" placeholder="Search" />
-    {% for movie in movies %}
+        <input type="search" list="movies" name="search" id="search" placeholder="Search" />
+        <datalist id="movies">
+            {% for movie in movies %}
+                <option value="{{ movie.title }}"/>
+            {% endfor %}
+        </datalist>
+        {% for movie in movies %}
             <div class="movie">
                 <div class="poster_container">
                 {% if movie.poster %}
@@ -24,6 +29,10 @@
                     </div>
                 </div>
             </div>
-    {% endfor %}
+        {% endfor %}
     </div>
+
+    <script>
+        new SimpleSearch('search', '.movie', 'h4');
+    </script>
 {% endblock %}
