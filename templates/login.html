@@ -10,20 +10,25 @@
 	</head>
 	<body>
 		<main>
-			<h1>Login</h1>
-			<form method="POST" action="{% url 'login' %}">
-				{% csrf_token %}
-                <input type="hidden" name='next' value='{{ next }}'>
-				<div class="flex">
-                    {{ form.username }}
-                    <label for="{{ form.username.id_for_label }}"><i class="fa fa-user"></i></label>
-				</div>
-				<div class="flex">
-                    {{ form.password }}
-                    <label for="{{ form.password.id_for_label }}"><i class="fa fa-unlock-alt"></i></label>
-				</div>
-				<button>Login <i class="fa fa-chevron-right" ></i></button>
-			</form>
+            <div id="explore">
+                <a href="{% url 'index' %}"><i class="fa fa-film"></i> Explore movies</a>
+            </div>
+            <div>
+                <h2>Login</h2>
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name='next' value='{{ next }}'>
+                    <div class="flex">
+                        {{ form.username }}
+                        <label for="{{ form.username.id_for_label }}"><i class="fa fa-user"></i></label>
+                    </div>
+                    <div class="flex">
+                        {{ form.password }}
+                        <label for="{{ form.password.id_for_label }}"><i class="fa fa-unlock-alt"></i></label>
+                    </div>
+                    <button>Login <i class="fa fa-chevron-right" ></i></button>
+                </form>
+            </div>
 		</main>
 	</body>
 </html>

@@ -20,8 +20,7 @@ main {
     width: 300px;
 }
 
-h1 {
-    font-family: Biolinum;
+h1, h2, h3 {
     color: #888;
     font-weight: normal;
     margin: 0.5em 0;
@@ -84,4 +83,29 @@ button i {
     vertical-align: middle;
     margin-left: 1em;
     transition: margin 0.25s;
+}
+
+
+#explore{
+    border-bottom: 1px solid hsla(0, 100%, 100%, 0.1);
+    padding: 2em 0;
+    margin: 2em 0;
+}
+
+#explore a{
+    color: #888;
+    background-color: hsla(0, 100%, 100%, 0.05);
+    display: inline-block;
+    padding: 1em;
+    width: 100%;
+    text-decoration: none;
+}
+
+#explore a:hover{
+    color: white;
+    background-color: hsla(0, 100%, 100%, 0.075);
+}
+
+#explore i{
+    margin-right: 0.75em;
 }
