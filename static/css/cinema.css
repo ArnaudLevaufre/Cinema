@@ -60,9 +60,9 @@ body{
 }
 
 #side_container.retracted{
-    width: 50px;
-    max-width: 50px;
-    min-width: 50px;
+    width: 150px;
+    max-width: 150px;
+    min-width: 150px;
 }
 
 #profile_picture{
