@@ -1,7 +1,7 @@
 import os
-import re
 import json
 import datetime
+import re
 from guessit import guess_movie_info
 from urllib.request import urlopen
 from urllib.parse import urlencode
@@ -13,11 +13,15 @@ from django.db.utils import IntegrityError
 MOVIES_EXT = [
     '.mp4',
     '.mkv',
+    '.avi',
 ]
 
-class API:
-    def search(self, name):
+class OMDBAPI:
+    @staticmethod
+    def search(name):
         infos = guess_movie_info(name)
+        if not infos.get('title'):
+            return
         try:
             params = urlencode({'s': infos['title'], 'y': infos['year'], 'type': 'movie', 'r': 'json'})
         except KeyError:
@@ -38,46 +42,114 @@ class API:
                         'poster': res['Poster'] if res['Poster'] != "N/A" else None,
                     }
 
+class ResolverResult:
+    def __init__(self, title, date=None, imdbid=None, poster=None):
+        self.title = title
+        self.date = date
+        self.imdbid = imdbid
+        self.poster = poster
+
+
+class Resolver:
+    def resolve(self, name):
+        raise NotImplementedError
+
+
+class OMDBFilenameResolver(Resolver):
+    def resolve(self, path):
+        name, ext = os.path.splitext(os.path.basename(path))
+        name = name.replace('&', '')
+        match = OMDBAPI.search(os.path.basename(path))
+        for m in match:
+            return ResolverResult(**m)
+
+
+class OMDBDirnameResolver(Resolver):
+    def resolve(self, path):
+        name = os.path.basename(os.path.dirname(path))
+        name = name.replace('&', '')
+        match = OMDBAPI.search(name)
+        for m in match:
+            return ResolverResult(**m)
+
+
+class OMDBBullshitStripperResolver(OMDBFilenameResolver):
+    def resolve(self, path):
+        path = re.sub('remastered|extended', '', path, flags=re.I)
+        return super().resolve(path)
+
+
+class DefaultResolver(Resolver):
+    def resolve(self, path):
+        name, ext = os.path.splitext(os.path.basename(path))
+        infos = guess_movie_info(name)
+        if infos.get('title'):
+            return ResolverResult(os.path.basename(path))
+        else:
+            return name
+
+
+class ResolverSet:
+    RESOLVERS = [
+        OMDBFilenameResolver,
+        OMDBDirnameResolver,
+        OMDBBullshitStripperResolver,
+        DefaultResolver
+    ]
+    def resolve(self, path):
+        for resolver in self.RESOLVERS:
+            r = resolver()
+            result = r.resolve(path)
+            print("Resolving %s with %s" % (path, r))
+            if result:
+                return result
+
 
 class Crawler:
-    def __init__(self, api=API):
-        self.api = api()
+
+    def __init__(self, cmd):
+        self.command = cmd
         self.movies = [m.path for m in Movie.objects.all()]
+        self.resolver_set = ResolverSet()
 
     def crawl(self, path):
-        print("Updating database")
         for dirname, subdirs, files in os.walk(path):
             for filename in files:
                 name, ext = os.path.splitext(filename)
-                if ext not in MOVIES_EXT:
-                    continue
                 path = os.path.join(dirname, filename)
+                if ext not in MOVIES_EXT:
+                    self.message(self.command.style.WARNING("UNSUPPORTED EXTENSION %s" % ext), path)
+                    continue
                 self.handle_file(name, path)
-                print(path)
+
+    def message(self, tag, message):
+        self.command.stdout.write("[ {:^40} ] {}".format(tag, message))
+
 
     def handle_file(self, name, path):
         if path in self.movies:
+            self.message(self.command.style.SUCCESS("ALREADY IN DB"), path)
             return
-        match = self.api.search(name)
+
+        movie = self.resolver_set.resolve(path)
         try:
-            for m in match:
-                poster_name = self.save_poster(m['poster'])
-                Movie.objects.create(
-                    title=m['title'],
-                    path=path,
-                    date=m['date'],
-                    imdbid=m['imdbid'],
-                    poster=os.path.join("posters", poster_name)
-                )
-                return
+            poster_name = self.save_poster(movie.poster)
+            if not poster_name:
+                self.message(self.command.style.NOTICE('NO POSTER'), path)
+                poster_path = None
             else:
-                name = guess_movie_info(name)['title']
-                Movie.objects.create(
-                    title=name,
-                    path=path,
-                )
+                poster_path = os.path.join("posters", poster_name)
+
+            Movie.objects.create(
+                title=movie.title,
+                path=path,
+                date=movie.date,
+                imdbid=movie.imdbid,
+                poster=poster_path
+            )
+            self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
         except IntegrityError:
-            print("Can't insert add", name, "to the database")
+            self.message(self.command.style.ERROR("DB ERROR"), path)
 
     def save_poster(self, poster_url):
         if not poster_url:
@@ -91,7 +163,6 @@ class Crawler:
     def symlink(self, path):
         destination = os.path.join(settings.MEDIA_ROOT, 'films', os.path.basename(path))
         if os.path.islink(destination):
-            print("Removed old link")
             os.remove(destination)
         os.symlink(path, destination)
 
@@ -100,20 +171,5 @@ class Command(BaseCommand):
     help = "Update local movie list"
 
     def handle(self, *args, **options):
-        crawler = Crawler()
+        crawler = Crawler(self)
         crawler.crawl('/data/Films')
-
-    def convert_name(self, name):
-        name = name.lower()
-        name = re.sub('1080p|720p', '', name)
-        name = re.sub('bluray|brrip|brrip', '', name)
-        name = re.sub('|'.join(UPLOADERS), '', name)
-        name = re.sub('x264|H264|\+hi|aac|h.264', '', name, re.IGNORECASE)
-        name = re.sub('5.1|7.1', '', name)
-        name = re.sub('(19|20)[0-9]{2}', '', name)
-        name = re.sub('extended|remastered', '', name)
-        name = re.sub('\.', ' ', name)
-        return name.strip()
-
-    def download_poster(self, name, poster_url):
-        pass
