@@ -191,7 +191,13 @@ class Crawler:
                 if ext not in MOVIES_EXT:
                     self.message(self.command.style.WARNING("UNSUPPORTED EXTENSION %s" % ext), path)
                     continue
+                statinfo = os.stat(path)
+                if statinfo.st_size < 256 * 2**20:  # size < 256MB
+                    self.message(self.command.style.WARNING("SAMPLE"), path)
+                    continue
                 self.handle_file(name, path)
+
+
 
     def message(self, tag, message):
         self.command.stdout.write("[ {:^40} ] {}".format(tag, message))
