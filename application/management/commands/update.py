@@ -54,6 +54,9 @@ class OMDBAPI:
             resp = json.loads(request.read().decode())
             if "Search" in resp:
                 for res in resp['Search']:
+                    infos = OMDBAPI.get_detailled_infos(res['imdbID'])
+                    poster = res['Poster']
+                    res = infos
                     try:
                         date = datetime.date(int(res['Year']), 1, 1)
                     except ValueError:
@@ -62,8 +65,17 @@ class OMDBAPI:
                         'title': res['Title'],
                         'date': date,
                         'imdbid': res['imdbID'],
-                        'poster': res['Poster'] if res['Poster'] != "N/A" else None,
+                        'poster': poster if poster != "N/A" else None,
                     }
+    @staticmethod
+    def get_detailled_infos(imdbid):
+        params = urlencode({'i': imdbid, 'plot': 'full', 'r': 'json'})
+        url = 'http://www.omdbapi.com/?%s' % params
+        with urlopen(url) as request:
+            resp = json.loads(request.read().decode())
+            if resp['Response'] == 'True':
+                return resp
+
 
 class ResolverResult:
     def __init__(self, title, date=None, imdbid=None, poster=None):
