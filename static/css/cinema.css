@@ -1,6 +1,10 @@
 *{
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
+    outline: none; !important
+}
+
+a:focus{
+    outline: none;
 }
 
 html{
