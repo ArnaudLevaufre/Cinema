@@ -17,6 +17,28 @@ MOVIES_EXT = [
     '.avi',
 ]
 
+
+class Report:
+    fail = 0
+    success = 0
+    poster = 0
+
+    @staticmethod
+    def display():
+        total = Report.fail + Report.success
+        print("")
+        print("Crawler repport")
+        print("===============")
+
+        print("")
+        print("Success {:>5} ({:>6.2f}%)".format(Report.success, Report.success/total*100))
+        print("Posters {:>5} ({:>6.2f}%)".format(Report.poster, Report.poster/total*100))
+        print("Fails   {:>5} ({:>6.2f}%)".format(Report.fail, Report.fail/total*100))
+
+        print("")
+        print("Total   {:>5}".format(total))
+
+
 class OMDBAPI:
     @staticmethod
     def search(name):
@@ -62,6 +84,7 @@ class OMDBFilenameResolver(Resolver):
         name = name.replace('&', '')
         match = OMDBAPI.search(os.path.basename(path))
         for m in match:
+            Report.success += 1
             return ResolverResult(**m)
 
 
@@ -71,6 +94,7 @@ class OMDBDirnameResolver(Resolver):
         name = name.replace('&', '')
         match = OMDBAPI.search(name)
         for m in match:
+            Report.success += 1
             return ResolverResult(**m)
 
 
@@ -85,6 +109,7 @@ class OMDBBullshitStripperResolver(OMDBFilenameResolver):
             r = resolver()
             result = r.resolve(path)
             if result:
+                Report.success += 1
                 return result
 
 
@@ -107,11 +132,13 @@ class OMDBWord2number(Resolver):
             r = resolver()
             result = r.resolve(path)
             if result:
+                Report.success += 1
                 return result
 
 
 class DefaultResolver(Resolver):
     def resolve(self, path):
+        Report.fail += 1
         name, ext = os.path.splitext(os.path.basename(path))
         infos = guess_movie_info(name)
         if infos.get('title'):
@@ -171,6 +198,7 @@ class Crawler:
                 poster_path = None
             else:
                 poster_path = os.path.join("posters", poster_name)
+                Report.poster += 1
 
             Movie.objects.create(
                 title=movie.title,
@@ -205,3 +233,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         crawler = Crawler(self)
         crawler.crawl('/data/Films')
+        Report.display()
