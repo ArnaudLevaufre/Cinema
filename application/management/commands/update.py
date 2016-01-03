@@ -2,6 +2,7 @@ import os
 import json
 import datetime
 import re
+from word2number import w2n
 from guessit import guess_movie_info
 from urllib.request import urlopen
 from urllib.parse import urlencode
@@ -74,9 +75,39 @@ class OMDBDirnameResolver(Resolver):
 
 
 class OMDBBullshitStripperResolver(OMDBFilenameResolver):
+    PARENT_RESOLVERS = [
+        OMDBFilenameResolver,
+        OMDBDirnameResolver
+    ]
     def resolve(self, path):
-        path = re.sub('remastered|extended', '', path, flags=re.I)
-        return super().resolve(path)
+        path = re.sub('remastered|extended|unrated', '', path, flags=re.I)
+        for resolver in self.PARENT_RESOLVERS:
+            r = resolver()
+            result = r.resolve(path)
+            if result:
+                return result
+
+
+class OMDBWord2number(Resolver):
+    PARENT_RESOLVERS = [
+        OMDBFilenameResolver,
+        OMDBDirnameResolver
+    ]
+    def resolve(self, path):
+        words = path.split()
+        for i, word in enumerate(words):
+            try:
+                if w2n.word_to_num(word):
+                    words[i] = str(w2n.word_to_num(word))
+            except IndexError:
+                pass
+        path = ' '.join(words)
+        print(path)
+        for resolver in self.PARENT_RESOLVERS:
+            r = resolver()
+            result = r.resolve(path)
+            if result:
+                return result
 
 
 class DefaultResolver(Resolver):
@@ -84,9 +115,9 @@ class DefaultResolver(Resolver):
         name, ext = os.path.splitext(os.path.basename(path))
         infos = guess_movie_info(name)
         if infos.get('title'):
-            return ResolverResult(os.path.basename(path))
+            return ResolverResult(infos['title'])
         else:
-            return name
+            return ResolverResult(name)
 
 
 class ResolverSet:
@@ -94,6 +125,7 @@ class ResolverSet:
         OMDBFilenameResolver,
         OMDBDirnameResolver,
         OMDBBullshitStripperResolver,
+        OMDBWord2number,
         DefaultResolver
     ]
     def resolve(self, path):
