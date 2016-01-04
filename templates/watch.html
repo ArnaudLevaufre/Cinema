@@ -7,12 +7,16 @@
     </video>
 </div>
 <div id="description">
+    {% if movie.poster %}
     <div class="poster">
-        <img src="{{ movie.poster.url }}" alt="poster">
+            <img src="{{ movie.poster.url }}" alt="poster">
     </div>
+    {% endif %}
     <div>
         <h1><a href="{% url 'index' %}" class="back_link"><i class="fa fa-chevron-left"></i></a> {{ movie.title }}</h1>
-        <p>{{ movie.plot }}</p>
+        {% if movie.plot %}
+            <p id="plot">{{ movie.plot }}</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

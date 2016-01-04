@@ -20,7 +20,7 @@ body{
     /*background-image: linear-gradient(#2c3a3f, #26242C);*/
     /*background-image: linear-gradient(#3c382f, #24272C);*/
     min-height: 100%;
-    color: #888;
+    color: hsla(0, 100%, 100%, 0.5);
 }
 
 .flex_container{
@@ -262,12 +262,28 @@ h1{
 
 
 #description{
-    margin: 2em 0;
+    margin: 2em 0 0 0;
     /* background-color: hsla(0,100%,100%,0.025);*/
     background-color: hsla(0,0%,0%,0.1);
     display: flex;
+    padding: 1em;
 }
 
 #description > div{
     padding: 1em;
+}
+
+#description > div + div{
+    margin-left: 0;
+}
+
+
+#description h1{
+    margin: 0;
+    padding: 0;
+
+}
+
+#plot{
+    text-align: justify;
 }
