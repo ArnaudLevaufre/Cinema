@@ -17,6 +17,14 @@ MOVIES_EXT = [
     '.avi',
 ]
 
+def save_poster(poster_url):
+    if not poster_url:
+        return ""
+    with urlopen(poster_url) as request:
+        filename = os.path.basename(poster_url)
+        with open(os.path.join(settings.MEDIA_ROOT, "posters", filename), "wb") as f:
+            f.write(request.read())
+            return os.path.join("posters", filename)  # return media url
 
 class Report:
     fail = 0
@@ -27,7 +35,7 @@ class Report:
     def display():
         total = Report.fail + Report.success
         print("")
-        print("Crawler repport")
+        print("Crawler report")
         print("===============")
 
         print("")
@@ -61,12 +69,14 @@ class OMDBAPI:
                         date = datetime.date(int(res['Year']), 1, 1)
                     except ValueError:
                         date = None
-                    yield {
-                        'title': res['Title'],
-                        'date': date,
-                        'imdbid': res['imdbID'],
-                        'poster': poster if poster != "N/A" else None,
-                    }
+                    poster = res['Poster'] if res['Poster'] != 'N/A' else ""
+                    yield Movie(
+                        title=res['Title'],
+                        date=date,
+                        imdbid=res['imdbID'],
+                        poster=save_poster(poster),
+                        plot=res['Plot']
+                    )
     @staticmethod
     def get_detailled_infos(imdbid):
         params = urlencode({'i': imdbid, 'plot': 'full', 'r': 'json'})
@@ -75,14 +85,6 @@ class OMDBAPI:
             resp = json.loads(request.read().decode())
             if resp['Response'] == 'True':
                 return resp
-
-
-class ResolverResult:
-    def __init__(self, title, date=None, imdbid=None, poster=None):
-        self.title = title
-        self.date = date
-        self.imdbid = imdbid
-        self.poster = poster
 
 
 class Resolver:
@@ -97,7 +99,7 @@ class OMDBFilenameResolver(Resolver):
         match = OMDBAPI.search(os.path.basename(path))
         for m in match:
             Report.success += 1
-            return ResolverResult(**m)
+            return m
 
 
 class OMDBDirnameResolver(Resolver):
@@ -107,7 +109,7 @@ class OMDBDirnameResolver(Resolver):
         match = OMDBAPI.search(name)
         for m in match:
             Report.success += 1
-            return ResolverResult(**m)
+            return m
 
 
 class OMDBBullshitStripperResolver(OMDBFilenameResolver):
@@ -154,9 +156,9 @@ class DefaultResolver(Resolver):
         name, ext = os.path.splitext(os.path.basename(path))
         infos = guess_movie_info(name)
         if infos.get('title'):
-            return ResolverResult(infos['title'])
+            return Movie(title=infos['title'])
         else:
-            return ResolverResult(name)
+            return Movie(title=name)
 
 
 class ResolverSet:
@@ -209,22 +211,13 @@ class Crawler:
             return
 
         movie = self.resolver_set.resolve(path)
+        if not movie.poster:
+            self.message(self.command.style.NOTICE('NO POSTER'), path)
+        else:
+            Report.poster += 1
         try:
-            poster_name = self.save_poster(movie.poster)
-            if not poster_name:
-                self.message(self.command.style.NOTICE('NO POSTER'), path)
-                poster_path = None
-            else:
-                poster_path = os.path.join("posters", poster_name)
-                Report.poster += 1
-
-            Movie.objects.create(
-                title=movie.title,
-                path=path,
-                date=movie.date,
-                imdbid=movie.imdbid,
-                poster=poster_path
-            )
+            movie.path = path
+            movie.save()
             self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
         except IntegrityError:
             self.message(self.command.style.ERROR("DB ERROR"), path)

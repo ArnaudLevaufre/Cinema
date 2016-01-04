@@ -20,6 +20,7 @@ body{
     /*background-image: linear-gradient(#2c3a3f, #26242C);*/
     /*background-image: linear-gradient(#3c382f, #24272C);*/
     min-height: 100%;
+    color: #888;
 }
 
 .flex_container{
@@ -254,4 +255,19 @@ h1{
     color: #aaa;
     display: inline-block;
     padding-right: 0.5em;
+}
+
+
+
+
+
+#description{
+    margin: 2em 0;
+    /* background-color: hsla(0,100%,100%,0.025);*/
+    background-color: hsla(0,0%,0%,0.1);
+    display: flex;
+}
+
+#description > div{
+    padding: 1em;
 }
