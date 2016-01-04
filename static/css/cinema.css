@@ -187,7 +187,7 @@ body{
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    transition: filter 0.075s ease-out;
+    transition: filter 0.1s ease-out;
     position: absolute;
     top: 0;
     left: 0;
@@ -200,16 +200,19 @@ body{
     position: absolute;
     top: 0;
     left: 0;
-    display: none;
+    opacity: 0;
     flex-flow: column;
+    display: flex;
+    transition: opacity 0.2s ease-out;
 }
+
 
 .movie:hover .poster{
     filter: blur(40px);
 }
 
 .movie:hover .overlay{
-    display: flex;
+    opacity: 1.0;
 }
 
 .overlay h4{
