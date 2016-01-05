@@ -15,6 +15,8 @@ MOVIES_EXT = [
     '.mp4',
     '.mkv',
     '.avi',
+    '.flv',
+    '.mov',
 ]
 
 def save_poster(poster_url):
@@ -88,8 +90,13 @@ class OMDBAPI:
 
 
 class Resolver:
-    def resolve(self, name):
-        raise NotImplementedError
+    SUBRESOLVERS = []
+    def resolve(self, path):
+        for klass in self.SUBRESOLVERS:
+            inst = klass()
+            result = inst.resolve(path)
+            if result:
+                return result
 
 
 class OMDBFilenameResolver(Resolver):
@@ -112,23 +119,18 @@ class OMDBDirnameResolver(Resolver):
             return m
 
 
-class OMDBBullshitStripperResolver(OMDBFilenameResolver):
-    PARENT_RESOLVERS = [
+class OMDBBullshitStripperResolver(Resolver):
+    SUBRESOLVERS = [
         OMDBFilenameResolver,
         OMDBDirnameResolver
     ]
     def resolve(self, path):
         path = re.sub('remastered|extended|unrated', '', path, flags=re.I)
-        for resolver in self.PARENT_RESOLVERS:
-            r = resolver()
-            result = r.resolve(path)
-            if result:
-                Report.success += 1
-                return result
+        return super().resolve(path)
 
 
 class OMDBWord2number(Resolver):
-    PARENT_RESOLVERS = [
+    SUBRESOLVERS = [
         OMDBFilenameResolver,
         OMDBDirnameResolver
     ]
@@ -141,13 +143,7 @@ class OMDBWord2number(Resolver):
             except IndexError:
                 pass
         path = ' '.join(words)
-        print(path)
-        for resolver in self.PARENT_RESOLVERS:
-            r = resolver()
-            result = r.resolve(path)
-            if result:
-                Report.success += 1
-                return result
+        return super().resolve(path)
 
 
 class DefaultResolver(Resolver):
@@ -161,22 +157,14 @@ class DefaultResolver(Resolver):
             return Movie(title=name)
 
 
-class ResolverSet:
-    RESOLVERS = [
+class ResolverSet(Resolver):
+    SUBRESOLVERS = [
         OMDBFilenameResolver,
         OMDBDirnameResolver,
         OMDBBullshitStripperResolver,
         OMDBWord2number,
         DefaultResolver
     ]
-    def resolve(self, path):
-        for resolver in self.RESOLVERS:
-            r = resolver()
-            result = r.resolve(path)
-            print("Resolving %s with %s" % (path, r))
-            if result:
-                return result
-
 
 class Crawler:
 
