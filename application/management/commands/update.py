@@ -10,6 +10,7 @@ from django.core.management.base import BaseCommand
 from application.models import Movie
 from django.conf import settings
 from django.db.utils import IntegrityError
+from django.conf import settings
 
 MOVIES_EXT = [
     '.mp4',
@@ -231,5 +232,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         crawler = Crawler(self)
-        crawler.crawl('/data/Films')
+        for directory in settings.MOVIE_DIRS:
+            crawler.crawl(directory)
         Report.display()
