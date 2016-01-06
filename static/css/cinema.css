@@ -177,6 +177,7 @@ body{
     height: 100%;
     overflow: hidden;
     background-color: black;
+    border: 1px solid #222;
 }
 
 
