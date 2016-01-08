@@ -10,7 +10,6 @@ from django.core.management.base import BaseCommand
 from application.models import Movie
 from django.conf import settings
 from django.db.utils import IntegrityError
-from django.conf import settings
 
 MOVIES_EXT = [
     '.mp4',
@@ -33,9 +32,23 @@ class Report:
     fail = 0
     success = 0
     poster = 0
+    started = False
+    start_time = None
+
+
+    @staticmethod
+    def start():
+        Report.started = True
+        Report.start_time = datetime.datetime.now()
+        Report.fail = 0
+        Report.poster = 0
+        Report.success = 0
+
 
     @staticmethod
     def display():
+        Report.started = False
+        total_time = datetime.datetime.now() - Report.start_time
         total = Report.fail + Report.success
         print("")
         print("Crawler report")
@@ -48,6 +61,7 @@ class Report:
 
         print("")
         print("Total   {:>5}".format(total))
+        print("Time    {}".format(total_time))
 
 
 class OMDBAPI:
@@ -65,20 +79,11 @@ class OMDBAPI:
             resp = json.loads(request.read().decode())
             if "Search" in resp:
                 for res in resp['Search']:
-                    infos = OMDBAPI.get_detailled_infos(res['imdbID'])
-                    poster = res['Poster']
-                    res = infos
-                    try:
-                        date = datetime.date(int(res['Year']), 1, 1)
-                    except ValueError:
-                        date = None
                     poster = res['Poster'] if res['Poster'] != 'N/A' else ""
                     yield Movie(
                         title=res['Title'],
-                        date=date,
                         imdbid=res['imdbID'],
                         poster=save_poster(poster),
-                        plot=res['Plot']
                     )
     @staticmethod
     def get_detailled_infos(imdbid):
@@ -92,32 +97,53 @@ class OMDBAPI:
 
 class Resolver:
     SUBRESOLVERS = []
-    def resolve(self, path):
+    def resolve(self, path, movie):
         for klass in self.SUBRESOLVERS:
             inst = klass()
-            result = inst.resolve(path)
-            if result:
-                return result
+            movie = inst.resolve(path, movie)
+        return movie
 
 
 class OMDBFilenameResolver(Resolver):
-    def resolve(self, path):
+    def resolve(self, path, movie):
+        if movie.title:
+            return movie
         name, ext = os.path.splitext(os.path.basename(path))
         name = name.replace('&', '')
         match = OMDBAPI.search(os.path.basename(path))
         for m in match:
             Report.success += 1
-            return m
+            movie.title = m.title
+            movie.imdbid = m.imdbid
+            movie.poster = m.poster
+            break
+        return movie
 
 
 class OMDBDirnameResolver(Resolver):
-    def resolve(self, path):
+    def resolve(self, path, movie):
+        if movie.title:
+            return movie
         name = os.path.basename(os.path.dirname(path))
         name = name.replace('&', '')
         match = OMDBAPI.search(name)
         for m in match:
             Report.success += 1
-            return m
+            movie.title = m.title
+            movie.imdbid = m.imdbid
+            movie.poster = m.poster
+            break
+        return movie
+
+
+class OMDBDetailResolver(Resolver):
+    def resolve(self, path, movie):
+        if not movie.imdbid:
+            return movie
+        infos = OMDBAPI.get_detailled_infos(movie.imdbid)
+        if infos.get('Plot') and not movie.plot:
+            movie.plot = infos.get('Plot')
+        return movie
 
 
 class OMDBBullshitStripperResolver(Resolver):
@@ -125,9 +151,12 @@ class OMDBBullshitStripperResolver(Resolver):
         OMDBFilenameResolver,
         OMDBDirnameResolver
     ]
-    def resolve(self, path):
+    def resolve(self, path, movie):
+        if movie.title:
+            return movie
+
         path = re.sub('remastered|extended|unrated', '', path, flags=re.I)
-        return super().resolve(path)
+        return super().resolve(path, movie)
 
 
 class OMDBWord2number(Resolver):
@@ -135,7 +164,9 @@ class OMDBWord2number(Resolver):
         OMDBFilenameResolver,
         OMDBDirnameResolver
     ]
-    def resolve(self, path):
+    def resolve(self, path, movie):
+        if movie.title:
+            return movie
         words = path.split()
         for i, word in enumerate(words):
             try:
@@ -144,11 +175,13 @@ class OMDBWord2number(Resolver):
             except IndexError:
                 pass
         path = ' '.join(words)
-        return super().resolve(path)
+        return super().resolve(path, movie)
 
 
 class DefaultResolver(Resolver):
-    def resolve(self, path):
+    def resolve(self, path, movie):
+        if movie.title:
+            return movie
         Report.fail += 1
         name, ext = os.path.splitext(os.path.basename(path))
         infos = guess_movie_info(name)
@@ -164,6 +197,7 @@ class ResolverSet(Resolver):
         OMDBDirnameResolver,
         OMDBBullshitStripperResolver,
         OMDBWord2number,
+        OMDBDetailResolver,
         DefaultResolver
     ]
 
@@ -199,7 +233,7 @@ class Crawler:
             self.message(self.command.style.SUCCESS("ALREADY IN DB"), path)
             return
 
-        movie = self.resolver_set.resolve(path)
+        movie = self.resolver_set.resolve(path, Movie())
         if not movie.poster:
             self.message(self.command.style.NOTICE('NO POSTER'), path)
         else:
@@ -231,6 +265,7 @@ class Command(BaseCommand):
     help = "Update local movie list"
 
     def handle(self, *args, **options):
+        Report.start()
         crawler = Crawler(self)
         for directory in settings.MOVIE_DIRS:
             crawler.crawl(directory)
