@@ -4,12 +4,6 @@
 
 {% block main %}
     <div class="movie_list">
-        <input type="search" list="movies" name="search" id="search" placeholder="Search" />
-        <datalist id="movies">
-            {% for movie in movies %}
-                <option value="{{ movie.title }}"/>
-            {% endfor %}
-        </datalist>
         {% for movie in movies %}
             <div class="movie">
                 <div class="poster_container">

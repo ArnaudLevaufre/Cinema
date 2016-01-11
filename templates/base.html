@@ -10,51 +10,32 @@
         <script src="{% static 'js/simplesearch.js' %}"></script>
     </head>
     <body>
-        {% if not request.user.is_authenticated %}
-        <div id="login_container">
-            <a href="{% url 'login' %}"><i class="fa fa-user"></i> Login</a>
-        </div>
-        {% endif %}
-        <div class="flex_container column">
-            <div id="main_container">
-                {% block main %}
-                {% endblock %}
+
+        <div id="header" class="flex_container">
+            <div class="user_actions">
+                {% if request.path != "/" %}
+                    <a href="{% url 'index' %}"><i class="fa fa-chevron-left"></i></a>
+                {% endif %}
             </div>
-
-            {% if request.user.is_authenticated %}
-
-            <div id="side_container">
-                <a href="#" id="retract_btn"><i id="side_container_icon" class="fa fa-chevron-right"></i></a>
-                <!--
-                <img id="profile_picture" src="http://img1.mxstatic.com/wallpapers/1ee63d0d82faaebfb7108a7190eaf3bc_large.jpeg"/>
-                -->
-                <div id="user_actions">
+            <input type="search" list="movies" name="search" id="search" placeholder="Search a movie" />
+            <datalist id="movies">
+                {% for movie in movies %}
+                    <option value="{{ movie.title }}"/>
+                {% endfor %}
+            </datalist>
+            <div class="user_actions">
+                {% if request.user.is_authenticated %}
                     <a href="#"><i class="fa fa-user"></i></a>
                     <a href="{% url 'logout' %}"><i class="fa fa-power-off"></i></a>
-                </div>
-                <div id="watchlist">
-                    <h4>Watchlist <a href="#"><i class="fa fa-play-circle" title="Play all"></i></a></h4>
-                    <hr/>
-
-                </div>
+                {% else %}
+                    <a href="{% url 'login' %}"><i class="fa fa-sign-in"></i></a>
+                {% endif %}
             </div>
-
-            {% endif %}
         </div>
 
-
-        <script>
-            new Retractable('side_container', 'retract_btn', {
-                icon: {
-                    id: 'side_container_icon',
-                    retracted: {
-                        class: 'fa fa-chevron-left'
-                    },
-                    expanded:{
-                        class: 'fa fa-chevron-right'
-                    }
-                }
-            });
-        </script>
+        <div id="main_container">
+            {% block main %}
+            {% endblock %}
+        </div>
     </body>
 </html>

@@ -35,107 +35,35 @@ body{
     align-items: center;
 }
 
-#login_container{
-    margin: 0 1em;
-    position: absolute;
-    text-align: right;
-    top: 1em;
-    left: 2em;
-    width: calc(100% - 6em);
-}
-#login_container a{
-    color: hsla(0,100%,100%,0.15);
-    font-weight: bold;
-    text-decoration: none;
-}
-
-#login_container a:hover{
-    color: hsla(0,100%,100%,0.25);
-}
-
-#side_container{
-    margin: 1em;
-    width: 250px;
-    max-width: 250px;
-    min-width: 250px;
-    flex: 1 1 250px;
-    display: flex;
-    flex-flow: column;
-    background-color: hsla(0,100%,100%,0.025);
-}
-
-#side_container.retracted{
-    width: 150px;
-    max-width: 150px;
-    min-width: 150px;
-}
-
-#profile_picture{
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
 
 #main_container{
     margin: 1em;
     flex: 1 1 auto;
 }
 
-#retract_btn{
-    display: block;
-    width: 100%;
-    padding: 1em;
-    text-align: center;
-    background-color: hsla(0,100%,100%,0.025);
-    color: #888;
-}
 
-#retract_btn:hover{
-    background-color: hsla(0,100%,100%,0.075);
-    color: white;
-}
-
-#user_actions{
+.user_actions{
     display: flex;
     justify-content: center;
-    padding: 0;
-    background-color: hsla(0,100%,100%,0.025);
 }
 
 
-#user_actions a{
+.user_actions a{
     display: block;
     flex: 1 1 auto;
     text-align: center;
     padding: 1em;
     color: #888;
+    background-color: hsla(0,100%,100%,0.05);
 }
 
-#user_actions a:hover{
+.user_actions a:hover{
     background-color: hsla(0,100%,100%,0.075);
-    color: white;
+    color: #bbb;
 }
 
-#watchlist{
-    padding: 2em;
-}
-
-#watchlist h4{
-    color: #888;
-    padding: 0;
-    margin: 0;
-}
-
-#watchlist h4 a{
-    color: #888;
-    float: right;
-    display: inline-block;
-}
-
-#watchlist hr{
-    color: none;
-    border: none;
-    border-bottom: 1px solid hsla(0, 100%, 100%, 0.075);
+#header{
+    margin: 1em 1em 2em 1em;
 }
 
 #search{
@@ -145,7 +73,6 @@ body{
     color: #aaa;
     padding: 1em;
     width: 100%;
-    margin: 1em 1em 1em 1em;
 }
 
 #search:focus{
@@ -171,7 +98,6 @@ body{
     box-shadow: 0 0 4px hsla(0,0%,0%,0.25);
 }
 
-
 .movie .poster_container{
     width: 100%;
     height: 100%;
@@ -179,7 +105,6 @@ body{
     background-color: black;
     border: 1px solid #222;
 }
-
 
 .movie .poster{
     width: 100%;
@@ -216,7 +141,7 @@ body{
     opacity: 1.0;
 }
 
-.overlay h4{
+.overlay h4, #watchlist .overlay h4{
     width: 100%;
     color: hsla(0, 100%, 100%, 0.75);
     margin: 0;
