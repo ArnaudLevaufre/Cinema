@@ -37,7 +37,7 @@ def profile(request):
 
         if passwordform.has_changed() and passwordform.is_valid():
             passwordform.save()
-        elif not userform.has_changed():
+        elif not passwordform.has_changed():
             passwordform = PasswordChangeForm(user=request.user)
         else:
             error = True
