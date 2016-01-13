@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<h1>Edit your profile</h1>
+
+<form action="{{ request.path }}" method="POST">
+    {% csrf_token %}
+    {{ userform.as_p }}
+    <button>Save</button>
+
+
+<h1>Change your password</h1>
+
+    {{ passwordform.as_p }}
+    <button>Save</button>
+</form>
+
+
+{% endblock %}

@@ -25,7 +25,7 @@
             </datalist>
             <div class="user_actions">
                 {% if request.user.is_authenticated %}
-                    <a href="#"><i class="fa fa-user"></i></a>
+                    <a href="{% url 'profile' %}"><i class="fa fa-user"></i></a>
                     <a href="{% url 'logout' %}"><i class="fa fa-power-off"></i></a>
                 {% else %}
                     <a href="{% url 'login' %}"><i class="fa fa-sign-in"></i></a>

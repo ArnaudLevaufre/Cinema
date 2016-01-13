@@ -73,6 +73,7 @@ body{
     color: #aaa;
     padding: 1em;
     width: 100%;
+    transition: background-color 0.25s, color 0.25s;
 }
 
 #search:focus{
@@ -85,6 +86,7 @@ body{
     flex-flow: row wrap;
     margin: -1em;
 }
+
 
 .movie{
     display: inline-block;
@@ -215,4 +217,53 @@ h1{
 
 #plot{
     text-align: justify;
+}
+
+
+form p{
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+
+form p label{
+    flex: 0 1 250px;
+    min-width: 250px;
+    background-color: hsla(0, 100%, 100%, 0.025);
+    padding: 0.75em;
+}
+
+form p input{
+    width: 100%;
+    background-color: hsla(0,100%,100%,0.05);
+    border: none;
+    padding: 0.75em 1em;
+    color: #888;
+    transition: background-color 0.25s, color 0.25s;
+}
+
+form p input:focus{
+    background-color: hsla(0,100%,100%,0.075);
+}
+
+form p span{
+    display: none;
+}
+
+button {
+    background-color: hsla(0,100%,100%,0.05);
+    border: none;
+    margin: 0.5em 0;
+    border-radius: 3px;
+    color: #888;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.25s, color 0.25s;
+}
+
+button:hover{
+    background-color: hsla(0,100%,100%,0.075);
+    color: white;
 }
