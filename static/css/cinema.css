@@ -179,7 +179,7 @@ video{
 }
 
 h1{
-    color: #aaa;
+    color: hsla(0, 100%, 100%, 0.25);
 }
 
 .back_link{
@@ -266,4 +266,14 @@ button {
 button:hover{
     background-color: hsla(0,100%,100%,0.075);
     color: white;
+}
+
+form ul{
+    padding: 1em;
+    list-style: none;
+    background-color: hsla(0, 100%, 100%, 0.025);
+}
+
+form ul.errorlist{
+    background-color: hsla(0, 81%, 60%, 0.3);
 }

@@ -115,3 +115,11 @@ button i {
 #explore i{
     margin-right: 0.75em;
 }
+
+.error{
+    color: hsla(0, 100%, 100%, 0.5);
+    padding: 1em;
+    list-style: none;
+    background-color: hsla(0, 100%, 100%, 0.025);
+    background-color: hsla(0, 81%, 60%, 0.3);
+}
