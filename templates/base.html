@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="{% static 'contrib/font-awesome-4.5.0/css/font-awesome.min.css'%}" />
         <script src="{% static 'js/retract.js' %}"></script>
         <script src="{% static 'js/simplesearch.js' %}"></script>
+        <script src="{% static 'js/completion.js' %}"></script>
     </head>
     <body>
 
@@ -20,7 +21,11 @@
             <input type="search" list="movies" name="search" id="search" placeholder="Search a movie" />
             <datalist id="movies">
                 {% for movie in movies %}
-                    <option value="{{ movie.title }}"/>
+                    {% if movie.poster %}
+                        <option data-poster="{{ movie.poster.url }}" value="{{ movie.title }}" data-link="{% url 'watch' title=movie.title %}"/>
+                    {% else %}
+                        <option data-poster="" value="{{ movie.title }}" data-link="{% url 'watch' title=movie.title %}"/>
+                    {% endif %}
                 {% endfor %}
             </datalist>
             <div class="user_actions">
@@ -37,5 +42,15 @@
             {% block main %}
             {% endblock %}
         </div>
+
+        <script>
+            window.addEventListener('load', function(){
+                var completion = new Completion('search');
+                {% if enable_simple_search %}
+                    new SimpleSearch('search', '.movie', 'h4');
+                    completion.enabled = false;
+                {% endif %}
+            });
+        </script>
     </body>
 </html>

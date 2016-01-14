@@ -277,3 +277,39 @@ form ul{
 form ul.errorlist{
     background-color: hsla(0, 81%, 60%, 0.3);
 }
+
+#completion{
+    margin: -2em 1em 0 1em;
+    position: absolute;
+    width: calc(100% - 6em);
+    z-index: 20;
+    background-color: #333;
+    box-shadow: 0 2px 1px hsla(0, 0%, 0%, 0.2);
+}
+
+
+#completion > div{
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+#completion > div:hover, #completion > div.selected{
+    background-color: hsla(0, 0%, 0%, 0.25);
+}
+
+#completion > div img{
+    height: 5em;
+    width: 3.5em;
+    vertical-align: middle;
+    margin-right: 1em
+}
+
+#completion > div > div{
+    display: inline-block;
+    height: 5em;
+    width: 3.5em;
+    vertical-align: middle;
+    margin-right: 1em;
+    background-color: black;
+}
+

@@ -6,15 +6,14 @@ from .forms import UserForm
 
 
 def index(request):
-    ctx = {
-        'movies': Movie.objects.all(),
-    }
-    return render(request, 'index.html', ctx)
+    return render(request, 'index.html', {
+        'enable_simple_search': True,
+    })
 
 
-def watch(request, mid):
+def watch(request, title):
     ctx = {
-        'movie': get_object_or_404(Movie, pk=mid),
+        'movie': get_object_or_404(Movie, title=title),
     }
     return render(request, 'watch.html', ctx)
 
