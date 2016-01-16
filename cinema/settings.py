@@ -49,6 +49,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'application.middleware.AccessMiddleware',
 ]
 
 ROOT_URLCONF = 'cinema.urls'
@@ -123,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 
@@ -138,3 +139,5 @@ MEDIA_URL = "/media/"
 MOVIE_DIRS = [
     '/data/Films',
 ]
+
+LOGIN_REQUIRED = True

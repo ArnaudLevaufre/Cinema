@@ -20,8 +20,6 @@ def watch(request, title):
 
 @login_required
 def profile(request):
-
-
     if request.method == "POST":
         userform = UserForm(request.POST, instance=request.user)
         passwordform = PasswordChangeForm(request.user, request.POST)
