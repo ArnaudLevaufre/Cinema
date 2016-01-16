@@ -4,6 +4,10 @@ Cinema is a web application which provide a fancy movie library. Wether you run
 it on your local network or on a public server it gives you access to your
 movie database from any device by direct download or streaming.
 
+![](https://img.bananium.fr/arnaud/cinema_home.png)
+
+![](https://img.bananium.fr/arnaud/cinema_watch.png)
+
 
 ## Features
 
@@ -50,7 +54,9 @@ You may want to change the database settings to use mysql or postgresql instead 
 
 #### Nginx
 
-If you plan to run this application on a production environment I recommand to use nginx and uwsgi. A uwsgi configuration file is provided. Edit it to suit your needs and then run the uwsgi server like so:
+If you plan to run this application on a production environment I recommand to
+use nginx and uwsgi. A uwsgi configuration file is provided. Edit it to suit
+your needs and then run the uwsgi server like so:
 
 ```
 uwsgi uwsgi.ini
