@@ -1,8 +1,8 @@
 # Cinema
 
----
-
-Cinema is a web application which provide a fancy movie library. Wether you run it on your local network or on a public server it gives you access to your movie database from any device by direct download or streaming.
+Cinema is a web application which provide a fancy movie library. Wether you run
+it on your local network or on a public server it gives you access to your
+movie database from any device by direct download or streaming.
 
 
 ## Features
@@ -47,24 +47,6 @@ Setting this to True will ensure only logged user can access the different pages
 ##### DATABASES
 You may want to change the database settings to use mysql or postgresql instead of sqlite. Refer to the django documentation for more informations.
 
-Once you are satisfied with your settings you have to install the database migrations like so:
-```
-./manage.py migrate
-```
-
-To update the movie database simply run
-```
-./manage.py update
-```
-
-If you often add new movies you should install a cron job which run this command on a regular basis.
-
-Then you can run the django server
-```
-./manage.py runserver 127.0.0.1:1234
-```
-
-Visit http://127.0.0.1:1234 and you should have access to your movie database.
 
 #### Nginx
 
@@ -101,3 +83,25 @@ server {
 }
 
 ```
+
+### Running the app
+
+Once you are satisfied with your settings you have to install the database migrations like so:
+
+```
+./manage.py migrate
+```
+
+To update the movie database simply run
+```
+./manage.py update
+```
+
+If you often add new movies you should install a cron job which run this command on a regular basis.
+
+Then you can run the django server
+```
+./manage.py runserver 127.0.0.1:1234
+```
+
+Visit http://127.0.0.1:1234 and you should have access to your movie database.
