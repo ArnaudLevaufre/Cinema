@@ -13,7 +13,13 @@
         </div>
     {% endif %}
     <div>
-        <h1>{{ movie.title }} <a class="dl_button" href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a></h1>
+        <h1>{{ movie.title }} </h1>
+        <div class="actions">
+            <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
+            {% if movie.imdbid %}
+                <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
+            {% endif %}
+        </div>
         {% if movie.plot %}
             <p id="plot">{{ movie.plot }}</p>
         {% endif %}

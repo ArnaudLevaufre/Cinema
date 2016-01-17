@@ -153,14 +153,14 @@ body{
 }
 
 
-.actions{
+.movie .actions{
     margin: 1em;
     border-radius: 3px;
     display: flex;
     box-shadow: 0 0 2px hsla(0, 0%, 0%, 0.05);
 }
 
-.actions a{
+.movie .actions a{
     color: black;
     display: block;
     padding: 1em;
@@ -169,7 +169,7 @@ body{
     flex: 1 1 auto;
 }
 
-.actions a:hover{
+.movie .actions a:hover{
     background-color: hsla(0, 100%, 100%, 0.35);
 }
 
@@ -213,6 +213,22 @@ h1{
     margin: 0;
     padding: 0;
 
+}
+
+#description .actions{
+    margin: 1em 0;
+}
+
+#description .actions a{
+    display: inline-block;
+    background-color: hsla(0, 100%, 100%, 0.05);
+    padding: 1em 1.5em;
+    text-decoration: none;
+    color: hsla(0, 100%, 100%, 0.25);
+}
+
+#description .actions a:hover{
+    background-color: hsla(0, 100%, 100%, 0.075);
 }
 
 #plot{
@@ -311,9 +327,4 @@ form ul.errorlist{
     vertical-align: middle;
     margin-right: 1em;
     background-color: black;
-}
-
-.dl_button {
-    color: #888;
-
 }
