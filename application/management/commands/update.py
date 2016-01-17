@@ -50,6 +50,9 @@ class Report:
         Report.started = False
         total_time = datetime.datetime.now() - Report.start_time
         total = Report.fail + Report.success
+        if not total:
+            print("You media directory ({}) does not contain any film. Check your configuration.".format(settings.MOVIE_DIRS))
+            return
         print("")
         print("Crawler report")
         print("===============")
