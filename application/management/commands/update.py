@@ -244,6 +244,7 @@ class Crawler:
 
         movie.path = path
         movie.save()
+        self.symlink(path)
         self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
 
     def save_poster(self, poster_url):
