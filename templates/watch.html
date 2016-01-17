@@ -8,12 +8,12 @@
 </div>
 <div id="description">
     {% if movie.poster %}
-    <div class="poster">
-            <img src="{{ movie.poster.url }}" alt="poster">
-    </div>
+        <div class="poster">
+                <img src="{{ movie.poster.url }}" alt="poster">
+        </div>
     {% endif %}
     <div>
-        <h1>{{ movie.title }}</h1>
+        <h1>{{ movie.title }} <a class="dl_button" href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a></h1>
         {% if movie.plot %}
             <p id="plot">{{ movie.plot }}</p>
         {% endif %}
