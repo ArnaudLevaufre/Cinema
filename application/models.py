@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 class Movie(models.Model):
-    path = models.TextField(unique=True)
+    path = models.TextField()
     title = models.CharField(max_length=100)
     plot = models.TextField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)

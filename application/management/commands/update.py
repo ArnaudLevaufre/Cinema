@@ -241,12 +241,10 @@ class Crawler:
             self.message(self.command.style.NOTICE('NO POSTER'), path)
         else:
             Report.poster += 1
-        try:
-            movie.path = path
-            movie.save()
-            self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
-        except IntegrityError:
-            self.message(self.command.style.ERROR("DB ERROR"), path)
+
+        movie.path = path
+        movie.save()
+        self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
 
     def save_poster(self, poster_url):
         if not poster_url:
