@@ -79,7 +79,7 @@ server {
 
 	location /static {
 		autoindex off;
-		alias /path/to/project/directory/cinema/static;
+		alias /path/to/project/directory/cinema/collected_static;
 	}
 
     location / {
@@ -89,6 +89,12 @@ server {
 }
 
 ```
+You will then need to collect static files so run the following command:
+
+```
+./manage.py collectstatic
+```
+
 
 ### Running the app
 
