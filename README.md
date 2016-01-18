@@ -22,7 +22,7 @@ movie database from any device by direct download or streaming.
 
 ### Planned features
 - watchlist
-- fovorite movies
+- favorite movies
 - additional movie information (actors, producer ...)
 - ...
 
