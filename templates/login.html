@@ -10,9 +10,11 @@
 	</head>
 	<body>
 		<main>
-            <div id="explore">
-                <a href="{% url 'index' %}"><i class="fa fa-film"></i> Explore movies</a>
-            </div>
+            {% if not login_required %}
+                <div id="explore">
+                    <a href="{% url 'index' %}"><i class="fa fa-film"></i> Explore movies</a>
+                </div>
+            {% endif %}
             <div>
                 <h2>Login</h2>
                 {% if form.errors %}
