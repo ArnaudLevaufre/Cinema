@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Movie
 from django.contrib.auth.decorators import login_required
@@ -51,3 +52,12 @@ def profile(request):
         'passwordform': passwordform,
     }
     return render(request, 'profile.html', ctx)
+
+
+def random_movie(request):
+    movies = list(Movie.objects.all())
+    try:
+        choice = random.choice(movies)
+        return redirect('watch', title=choice.title)
+    except IndexError:
+        return render(request, 'random.html')
