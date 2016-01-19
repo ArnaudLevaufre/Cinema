@@ -12,6 +12,7 @@
     </head>
     <body>
 
+
         <div id="header" class="flex_container">
             <div class="user_actions">
                 {% if request.path != "/" %}
@@ -38,6 +39,14 @@
                 {% endif %}
             </div>
         </div>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
         <div id="main_container">
             {% block main %}

@@ -1,9 +1,11 @@
 import random
+from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Movie
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import UserForm
+from django.contrib import messages
 
 
 def index(request):
@@ -13,9 +15,21 @@ def index(request):
 
 
 def watch(request, title):
-    ctx = {
-        'movie': get_object_or_404(Movie, title=title),
-    }
+    try:
+        ctx = {
+            'movie': get_object_or_404(Movie, title=title),
+        }
+    except MultipleObjectsReturned:
+        ctx = {
+            'movie': Movie.objects.filter(title=title).first(),
+        }
+        messages.add_message(
+            request,
+            messages.INFO,
+            """
+            More than one movie have the title %s. Only the first one is shown
+            """ % title
+        )
     return render(request, 'watch.html', ctx)
 
 

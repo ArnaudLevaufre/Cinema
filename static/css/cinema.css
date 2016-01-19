@@ -13,7 +13,7 @@ html{
 }
 
 body{
-    padding: 2em;
+    padding: 1em;
     margin: 0;
     background-color: #2c3a3f;
     /*background-image: linear-gradient(#2c3a3f, #3C3734);*/
@@ -297,7 +297,7 @@ form ul.errorlist{
 #completion{
     margin: -2em 1em 0 1em;
     position: absolute;
-    width: calc(100% - 6em);
+    width: calc(100% - 4em);
     z-index: 20;
     background-color: #333;
     box-shadow: 0 2px 1px hsla(0, 0%, 0%, 0.2);
@@ -327,4 +327,31 @@ form ul.errorlist{
     vertical-align: middle;
     margin-right: 1em;
     background-color: black;
+}
+
+.messages{
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2em;
+}
+.messages li{
+    padding: 1em;
+    margin: 1em;
+    background-color: hsla(0, 100%, 100%, 0.025);
+}
+
+.messages li.info{
+    background-color: hsla(203, 55%, 68%, 0.3);
+}
+
+.messages li.error{
+    background-color: hsla(0, 81%, 60%, 0.3);
+}
+
+.messages li.warning{
+    background-color: hsla(29, 55%, 68%, 0.3);
+}
+
+.messages li.success{
+    background-color: hsla(106, 55%, 68%, 0.3);
 }
