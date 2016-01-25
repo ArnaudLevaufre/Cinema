@@ -38,7 +38,6 @@
         if(!this.input){
             log("Could not find input with id " + input);
         }
-        log(this.input);
         this.input.addEventListener('keyup', function(event){
             this.update();
         }.bind(this));
