@@ -14,22 +14,15 @@ def index(request):
     })
 
 
-def watch(request, title):
+def watch(request, mid):
     try:
         ctx = {
-            'movie': get_object_or_404(Movie, title=title),
+            'movie': get_object_or_404(Movie, pk=mid),
         }
     except MultipleObjectsReturned:
         ctx = {
-            'movie': Movie.objects.filter(title=title).first(),
+            'movie': Movie.objects.filter(pk=mid).first(),
         }
-        messages.add_message(
-            request,
-            messages.INFO,
-            """
-            More than one movie have the title %s. Only the first one is shown
-            """ % title
-        )
     return render(request, 'watch.html', ctx)
 
 
@@ -72,6 +65,6 @@ def random_movie(request):
     movies = list(Movie.objects.all())
     try:
         choice = random.choice(movies)
-        return redirect('watch', title=choice.title)
+        return redirect('watch', mid=choice.pk)
     except IndexError:
         return render(request, 'random.html')

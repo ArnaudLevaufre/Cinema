@@ -23,9 +23,9 @@
             <datalist id="movies">
                 {% for movie in movies %}
                     {% if movie.poster %}
-                        <option data-poster="{{ movie.poster.url }}" value="{{ movie.title }}" data-link="{% url 'watch' title=movie.title %}"/>
+                        <option data-poster="{{ movie.poster.url }}" value="{{ movie.title }}" data-link="{% url 'watch' mid=movie.pk %}"/>
                     {% else %}
-                        <option data-poster="" value="{{ movie.title }}" data-link="{% url 'watch' title=movie.title %}"/>
+                        <option data-poster="" value="{{ movie.title }}" data-link="{% url 'watch' mid=movie.pk %}"/>
                     {% endif %}
                 {% endfor %}
             </datalist>

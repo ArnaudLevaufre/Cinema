@@ -18,7 +18,7 @@
                 <div class="overlay">
                     <h4>{{ movie.title }}</h4>
                     <div class="actions">
-                        <a href="{% url 'watch' title=movie.title %}"><i class="fa fa-eye"></i></a>
+                        <a href="{% url 'watch' mid=movie.pk %}"><i class="fa fa-eye"></i></a>
                         <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
                     </div>
                 </div>
