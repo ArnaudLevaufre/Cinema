@@ -228,7 +228,10 @@ class Crawler:
 
 
     def message(self, tag, message):
-        self.command.stdout.write("[ {:^40} ] {}".format(tag, message))
+        try:
+            self.command.stdout.write("[ {:^40} ] {}".format(tag, message))
+        except UnicodeEncodeError:
+            pass
 
 
     def handle_file(self, name, path):
