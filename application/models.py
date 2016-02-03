@@ -1,6 +1,7 @@
 from django.db import models
 import os
 from django.conf import settings
+from django.utils import timezone
 
 
 class Movie(models.Model):
@@ -8,6 +9,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=100)
     plot = models.TextField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
+    created = models.DateTimeField(default=timezone.now)
     imdbid = models.CharField(max_length=9, null=True, blank=True)
     poster = models.ImageField(upload_to="posters", null=True, blank=True)
 
