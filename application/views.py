@@ -1,11 +1,11 @@
 import random
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Movie
+from django.db import transaction
+from .models import Movie, NewMovieNotification
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import UserForm
-from django.contrib import messages
 
 
 def index(request):
@@ -59,6 +59,24 @@ def profile(request):
         'passwordform': passwordform,
     }
     return render(request, 'profile.html', ctx)
+
+@login_required
+def new_movies(request):
+    ctx = {
+        'unread_notifications': [],
+        'read_notifications': [],
+    }
+
+    with transaction.atomic():
+        for notification in NewMovieNotification.objects.filter(user=request.user):
+            if notification.read:
+                ctx['read_notifications'].append(notification.movie)
+            else:
+                ctx['unread_notifications'].append(notification.movie)
+                notification.read = True
+                notification.save()
+
+    return render(request, 'new_movies.html', ctx)
 
 
 def random_movie(request):

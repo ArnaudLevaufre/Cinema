@@ -192,7 +192,7 @@ h1{
 
 
 
-#description{
+.description{
     margin: 2em 0 0 0;
     /* background-color: hsla(0,100%,100%,0.025);*/
     background-color: hsla(0,0%,0%,0.1);
@@ -200,26 +200,31 @@ h1{
     padding: 1em;
 }
 
-#description > div{
+.description > div{
     padding: 1em;
 }
 
-#description > div + div{
+.description > div + div{
     margin-left: 0;
 }
 
+.description .poster img{
+    max-width: 150px;
+    max-height: 215px;
+}
 
-#description h1{
+
+.description h1{
     margin: 0;
     padding: 0;
 
 }
 
-#description .actions{
+.description .actions{
     margin: 1em 0;
 }
 
-#description .actions a{
+.description .actions a{
     display: inline-block;
     background-color: hsla(0, 100%, 100%, 0.05);
     padding: 1em 1.5em;
@@ -227,7 +232,7 @@ h1{
     color: hsla(0, 100%, 100%, 0.25);
 }
 
-#description .actions a:hover{
+.description .actions a:hover{
     background-color: hsla(0, 100%, 100%, 0.075);
 }
 
@@ -354,4 +359,36 @@ form ul.errorlist{
 
 .messages li.success{
     background-color: hsla(106, 55%, 68%, 0.3);
+}
+
+.new_movie_notification{
+    width: 100%;
+    padding: 0;
+}
+
+.user_actions .active_notification{
+    color: #b8ead8;
+    text-shadow: 0 0 20px #b8ead8;
+    animation-name: notify_blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes notify_blink{
+    0%{
+        color: #888;
+        text-shadow: 0 0 10px hsla(0,0%,0%,0)
+    }
+    5%{
+        color: #b8ead8;
+        text-shadow: 0 0 10px #b8ead8;
+    }
+    15%{
+        color: #b8ead8;
+        text-shadow: 0 0 10px #b8ead8;
+    }
+    100%{
+        color: #888;
+        text-shadow: 0 0 10px hsla(0,0%,0%,0)
+    }
 }

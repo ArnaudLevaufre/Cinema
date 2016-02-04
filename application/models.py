@@ -2,6 +2,8 @@ from django.db import models
 import os
 from django.conf import settings
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db import transaction
 
 
 class Movie(models.Model):
@@ -21,3 +23,23 @@ class Movie(models.Model):
 
     class Meta:
         ordering = ['title']
+
+
+class NewMovieNotification(models.Model):
+    movie = models.ForeignKey(Movie)
+    user = models.ForeignKey(User)
+    read = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now, editable=False)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return "New movie notification for user %s and movie %s" % (self.user, self.movie)
+
+    @staticmethod
+    def notify_all(movie):
+        with transaction.atomic():
+            for user in User.objects.all():
+                NewMovieNotification.objects.create(movie=movie, user=user)
+

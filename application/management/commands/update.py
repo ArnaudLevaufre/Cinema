@@ -7,7 +7,7 @@ from guessit import guess_movie_info
 from urllib.request import urlopen
 from urllib.parse import urlencode
 from django.core.management.base import BaseCommand
-from application.models import Movie
+from application.models import Movie, NewMovieNotification
 from django.conf import settings
 from django.db.utils import IntegrityError
 
@@ -247,6 +247,7 @@ class Crawler:
 
         movie.path = path
         movie.save()
+        NewMovieNotification.notify_all(movie)
         self.symlink(path)
         self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
 

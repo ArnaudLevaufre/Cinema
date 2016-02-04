@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block main %}
+
+    {% if unread_notifications %}
+        <h1>New movies available</h1>
+        {% for movie in unread_notifications %}
+            <div class="description new_movie_notification">
+                {% if movie.poster %}
+                    <div class="poster">
+                        <img src="{{ movie.poster.url }}" alt="poster">
+                    </div>
+                {% endif %}
+                <div>
+                    <h1>{{ movie.title }} </h1>
+                    <div class="actions">
+                        <a href="{% url 'watch' mid=movie.pk %}"><i class="fa fa-play"></i></a>
+                        <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
+                        {% if movie.imdbid %}
+                            <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
+                        {% endif %}
+                    </div>
+                    {% if movie.plot %}
+                        <p id="plot">{{ movie.plot }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if read_notifications %}
+        <h1>Old notifications</h1>
+        {% for movie in read_notifications %}
+            <div class="description new_movie_notification">
+                {% if movie.poster %}
+                    <div class="poster">
+                        <img src="{{ movie.poster.url }}" alt="poster">
+                    </div>
+                {% endif %}
+                <div>
+                    <h1>{{ movie.title }} </h1>
+                    <div class="actions">
+                        <a href="{% url 'watch' mid=movie.pk %}"><i class="fa fa-play"></i></a>
+                        <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
+                        {% if movie.imdbid %}
+                            <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
+                        {% endif %}
+                    </div>
+                    {% if movie.plot %}
+                        <p id="plot">{{ movie.plot }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
