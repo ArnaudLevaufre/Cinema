@@ -136,6 +136,7 @@ body{
 
 
 .movie:hover .poster{
+    -webkit-filter: blur(40px);
     filter: blur(40px);
 }
 

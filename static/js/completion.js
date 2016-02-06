@@ -142,7 +142,7 @@
         this.movies.hide();
         this.enabled = true;
 
-        for(var item of this.input.list.getElementsByTagName('option')){
+        for(var item of Array.prototype.slice.call(this.input.list.getElementsByTagName('option'))){
             this.movies.push(new Movie(item));
         }
         this.input.removeAttribute('list');

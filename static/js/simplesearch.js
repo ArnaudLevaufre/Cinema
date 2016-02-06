@@ -28,7 +28,7 @@
     function SimpleSearch(input, itemSelector, valueSelector){
         this.input = document.getElementsByName(input)[0] || document.getElementById(input);
         this.items = [];
-        for(var element of document.querySelectorAll(itemSelector)){
+        for(var element of Array.prototype.slice.call(document.querySelectorAll(itemSelector))){
             this.items.push(new SearchItem(
                 element.querySelectorAll(valueSelector)[0].innerHTML,
                 element
