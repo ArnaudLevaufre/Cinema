@@ -13,7 +13,9 @@
         window.addEventListener('load', function(){
             var video = document.querySelector('video');
             var sources = video.querySelectorAll('source');
-            sources[sources.length - 1].addEventListener('error', function(){
+
+
+            function checkTypeError(){
                 if(video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE){
                     var errorlist = document.createElement('ul');
                     errorlist.className = "messages";
@@ -23,7 +25,10 @@
                     errorlist.appendChild(error);
                     video.parentNode.replaceChild(errorlist, video);
                 }
-            });
+            }
+
+            checkTypeError();
+            sources[sources.length - 1].addEventListener('error', checkTypeError);
         });
     </script>
 </div>
