@@ -4,7 +4,28 @@
 <div class="video_container">
     <video controls>
         <source src="{{ movie.path_to_static }}" type="video/mp4">
+        <ul class="messages">
+            <li class="error">Your browser doesn't support HTML5 embeded videos.</li>
+        </ul>
     </video>
+
+    <script>
+        window.addEventListener('load', function(){
+            var video = document.querySelector('video');
+            var sources = video.querySelectorAll('source');
+            sources[sources.length - 1].addEventListener('error', function(){
+                if(video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE){
+                    var errorlist = document.createElement('ul');
+                    errorlist.className = "messages";
+                    var error = document.createElement("li");
+                    error.className = "info";
+                    error.innerHTML = "This movie format cannot be read in your browser. You can still download the movie and watch it with your favourite player.";
+                    errorlist.appendChild(error);
+                    video.parentNode.replaceChild(errorlist, video);
+                }
+            });
+        });
+    </script>
 </div>
 <div class="description">
     {% if movie.poster %}

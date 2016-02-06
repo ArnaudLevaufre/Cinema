@@ -343,7 +343,6 @@ form ul.errorlist{
 }
 .messages li{
     padding: 1em;
-    margin: 1em;
     background-color: hsla(0, 100%, 100%, 0.025);
 }
 
