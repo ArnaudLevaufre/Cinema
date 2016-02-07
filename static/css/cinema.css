@@ -90,7 +90,7 @@ body{
 
 
 .movie{
-    display: inline-block;
+    display: block;
     flex: 1 1 auto;
     margin: 1em;
     min-width: 175px;
