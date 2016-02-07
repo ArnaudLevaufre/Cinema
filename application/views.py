@@ -68,13 +68,12 @@ def new_movies(request):
     }
 
     with transaction.atomic():
-        for notification in NewMovieNotification.objects.filter(user=request.user):
-            if notification.read:
-                ctx['read_notifications'].append(notification.movie)
-            else:
-                ctx['unread_notifications'].append(notification.movie)
-                notification.read = True
-                notification.save()
+        for notification in NewMovieNotification.objects.filter(user=request.user, read=False):
+            ctx['unread_notifications'].append(notification.movie)
+            notification.read = True
+            notification.save()
+        for notification in NewMovieNotification.objects.filter(user=request.user, read=True)[:10]:
+            ctx['read_notifications'].append(notification.movie)
 
     return render(request, 'new_movies.html', ctx)
 
