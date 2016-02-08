@@ -54,13 +54,13 @@ body{
     flex: 1 1 auto;
     text-align: center;
     padding: 1em;
-    color: #888;
+    color: hsla(0, 100%, 100%, 0.25);
     background-color: hsla(0,100%,100%,0.05);
 }
 
 .user_actions a:hover{
     background-color: hsla(0,100%,100%,0.075);
-    color: #bbb;
+    color: hsla(0, 100%, 100%, 0.5);
 }
 
 #header{
@@ -368,8 +368,8 @@ form ul.errorlist{
 }
 
 .user_actions .active_notification{
-    color: #b8ead8;
-    text-shadow: 0 0 20px #b8ead8;
+    color: white);
+    text-shadow: 0 0 20px white;
     animation-name: notify_blink;
     animation-duration: 1s;
     animation-iteration-count: infinite;
@@ -377,19 +377,19 @@ form ul.errorlist{
 
 @keyframes notify_blink{
     0%{
-        color: #888;
+        color: hsla(0, 100%, 100%, 0.25);
         text-shadow: 0 0 10px hsla(0,0%,0%,0)
     }
     5%{
-        color: #b8ead8;
+        color: white;
         text-shadow: 0 0 10px #b8ead8;
     }
     15%{
-        color: #b8ead8;
+        color: white;
         text-shadow: 0 0 10px #b8ead8;
     }
     100%{
-        color: #888;
+        color: hsla(0, 100%, 100%, 0.25);
         text-shadow: 0 0 10px hsla(0,0%,0%,0)
     }
 }
