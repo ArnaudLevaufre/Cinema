@@ -13,11 +13,13 @@ movie database from any device by direct download or streaming.
 
 ### Current features
 
-- Automatic movie recognition from filename
 - Automatic informations and poster fetching
+- Automatic movie recognition from filename
+- Direct download
 - Movie managment and edition
 - Movie streaming for .mp4 movies (HTML5 player)
-- Direct download
+- Notifications of newly available movies
+- Random movie
 - Search
 
 ### Planned features
