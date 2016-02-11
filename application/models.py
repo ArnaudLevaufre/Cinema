@@ -6,6 +6,13 @@ from django.contrib.auth.models import User
 from django.db import transaction
 
 
+class MovieDirectory(models.Model):
+    path = models.CharField(max_length=4096)
+    last_refresh = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.path
+
 class Movie(models.Model):
     path = models.TextField()
     title = models.CharField(max_length=100)

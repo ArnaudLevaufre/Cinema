@@ -135,11 +135,4 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
-
-# Movie dirs
-
-MOVIE_DIRS = [
-    '/data/Films',
-]
-
 LOGIN_REQUIRED = True

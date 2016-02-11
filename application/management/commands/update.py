@@ -7,9 +7,10 @@ from guessit import guess_movie_info
 from urllib.request import urlopen
 from urllib.parse import urlencode
 from django.core.management.base import BaseCommand
-from application.models import Movie, NewMovieNotification
+from application.models import Movie, NewMovieNotification, MovieDirectory
 from django.conf import settings
 from django.db.utils import IntegrityError
+from django.utils import timezone
 
 MOVIES_EXT = [
     '.mp4',
@@ -51,7 +52,7 @@ class Report:
         total_time = datetime.datetime.now() - Report.start_time
         total = Report.fail + Report.success
         if not total:
-            print("You media directory ({}) does not contain any new film.".format(settings.MOVIE_DIRS))
+            print("You media directory ({}) does not contain any new film.".format(list(MovieDirectory.objects.all())))
             return
         print("")
         print("Crawler report")
@@ -273,6 +274,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         Report.start()
         crawler = Crawler(self)
-        for directory in settings.MOVIE_DIRS:
-            crawler.crawl(directory)
+        for directory in MovieDirectory.objects.all():
+            crawler.crawl(directory.path)
+            directory.last_refresh = timezone.now()
+            directory.save()
         Report.display()
