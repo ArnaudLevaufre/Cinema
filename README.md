@@ -44,9 +44,6 @@ pip install -r requirements.txt
 
 Edit the file `cinema/settings.py`. The configuration you should change are the following ones
 
-##### MOVIE_DIRS
-It is the list of all the directories containing movies you want to index.
-
 ##### LOGIN_REQUIRED
 Setting this to True will ensure only logged user can access the different pages. Setting this to False allows anyone a public access to the movies.
 
@@ -106,7 +103,14 @@ Once you are satisfied with your settings you have to install the database migra
 ./manage.py migrate
 ```
 
-To update the movie database simply run
+You should start by adding a movie directory by executing the following command line
+```
+./manage.py add /path/to/movie/directory
+```
+Or by visiting the django administration site.
+
+Then update the movie database simply run.
+
 ```
 ./manage.py update
 ```
