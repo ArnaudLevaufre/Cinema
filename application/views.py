@@ -1,8 +1,10 @@
 import random
+import json
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.db import transaction
-from .models import Movie, NewMovieNotification
+from .models import Movie, NewMovieNotification, WatchlistItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import UserForm
@@ -85,3 +87,36 @@ def random_movie(request):
         return redirect('watch', mid=choice.pk)
     except IndexError:
         return render(request, 'random.html')
+
+
+@login_required
+def watchlist(request):
+    ctx = {
+        'watchlist': [wli.movie for wli in WatchlistItem.objects.filter(user=request.user)]
+    }
+    return render(request, 'watchlist.html', ctx)
+
+
+@login_required
+def watchlist_add(request):
+    json_data = json.loads(request.read().decode())
+    try:
+        movie = Movie.objects.get(pk=json_data['movie'])
+        WatchlistItem.objects.create(user=request.user, movie=movie)
+    except Movie.DoesNotExist:
+        return JsonResponse({'error': 'Movie does not exists'})
+
+    return JsonResponse({})
+
+@login_required
+def watchlist_remove(request):
+    json_data = json.loads(request.data.read())
+    WatchlistItem.filter(user=request.user, pk=json_data['id']).delete()
+    return JsonResponse({})
+
+
+@login_required
+def watchlist_list(request):
+    return JsonResponse({
+        'movies': list(WatchlistItem.objects.filter(user=request.user))
+    })

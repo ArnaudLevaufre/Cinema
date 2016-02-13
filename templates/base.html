@@ -9,6 +9,7 @@
         <script src="{% static 'js/retract.js' %}"></script>
         <script src="{% static 'js/simplesearch.js' %}"></script>
         <script src="{% static 'js/completion.js' %}"></script>
+        <script src="{% static 'js/watchlist.js' %}"></script>
     </head>
     <body>
 
@@ -31,6 +32,7 @@
             </datalist>
             <div class="user_actions">
                 <a href="{% url 'random' %}" title="Random"><i class="fa fa-random"></i></a>
+                <a href="{% url 'watchlist' %}" title="Watchlist" ><i class="fa fa-eye"></i></a>
                 {% if request.user.is_authenticated %}
                     {% if new_movie_notifications %}
                         <a href="{% url 'new_movies' %}" title="New movies" class="active_notification"><i class="fa fa-bell"></i></a>
@@ -46,6 +48,9 @@
                     <a href="{% url 'login' %}" title="Login"><i class="fa fa-sign-in"></i></a>
                 {% endif %}
             </div>
+        </div>
+
+        <div id="watchlist">
         </div>
 
         {% if messages %}

@@ -13,6 +13,7 @@ class MovieDirectory(models.Model):
     def __str__(self):
         return self.path
 
+
 class Movie(models.Model):
     path = models.TextField()
     title = models.CharField(max_length=100)
@@ -50,3 +51,10 @@ class NewMovieNotification(models.Model):
             for user in User.objects.all():
                 NewMovieNotification.objects.create(movie=movie, user=user)
 
+
+class WatchlistItem(models.Model):
+    movie = models.ForeignKey(Movie)
+    user = models.ForeignKey(User)
+
+    def __str__(self):
+        return "Watchlist item %s for user %s" % (self.movie, self.user)
