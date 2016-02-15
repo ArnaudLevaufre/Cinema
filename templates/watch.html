@@ -14,6 +14,10 @@
             var video = document.querySelector('video');
             var sources = video.querySelectorAll('source');
 
+            video.addEventListener('play', function(){
+                watchlist.remove({{ movie.id }});
+            });
+
             function checkTypeError(){
                 if(video.networkState == HTMLMediaElement.NETWORK_NO_SOURCE){
                     var errorlist = document.createElement('ul');
@@ -40,6 +44,7 @@
     <div>
         <h1>{{ movie.title }} </h1>
         <div class="actions">
+            <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
             <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
             {% if movie.imdbid %}
                 <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>

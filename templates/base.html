@@ -6,6 +6,7 @@
         <meta charset="UTF-8" />
         <link rel="stylesheet" href="{% static 'css/cinema.css' %}"/>
         <link rel="stylesheet" href="{% static 'contrib/font-awesome-4.5.0/css/font-awesome.min.css'%}" />
+        <script src="{% static 'js/django.js' %}"></script>
         <script src="{% static 'js/retract.js' %}"></script>
         <script src="{% static 'js/simplesearch.js' %}"></script>
         <script src="{% static 'js/completion.js' %}"></script>
@@ -32,7 +33,7 @@
             </datalist>
             <div class="user_actions">
                 <a href="{% url 'random' %}" title="Random"><i class="fa fa-random"></i></a>
-                <a href="{% url 'watchlist' %}" title="Watchlist" ><i class="fa fa-eye"></i></a>
+                <a href="{% url 'watchlist' %}" title="Watchlist" onclick="watchlist.toggle();return false;"><i class="fa fa-eye"></i></a>
                 {% if request.user.is_authenticated %}
                     {% if new_movie_notifications %}
                         <a href="{% url 'new_movies' %}" title="New movies" class="active_notification"><i class="fa fa-bell"></i></a>

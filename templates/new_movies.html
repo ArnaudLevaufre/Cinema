@@ -17,6 +17,7 @@
                     <h1>{{ movie.title }} </h1>
                     <div class="actions">
                         <a href="{% url 'watch' mid=movie.pk %}"><i class="fa fa-play"></i></a>
+                        <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
                         <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
                         {% if movie.imdbid %}
                             <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
@@ -43,6 +44,7 @@
                     <h1>{{ movie.title }} </h1>
                     <div class="actions">
                         <a href="{% url 'watch' mid=movie.pk %}"><i class="fa fa-play"></i></a>
+                        <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
                         <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
                         {% if movie.imdbid %}
                             <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>

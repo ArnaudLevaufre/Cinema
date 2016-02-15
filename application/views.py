@@ -4,6 +4,8 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.db import transaction
+from django.db.utils import IntegrityError
+from django.core.urlresolvers import reverse
 from .models import Movie, NewMovieNotification, WatchlistItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -103,20 +105,36 @@ def watchlist_add(request):
     try:
         movie = Movie.objects.get(pk=json_data['movie'])
         WatchlistItem.objects.create(user=request.user, movie=movie)
+        return JsonResponse({'movie': {
+            'id': movie.id,
+            'title': movie.title,
+            'poster': movie.poster.url if movie.poster else '',
+            'url': reverse('watch', kwargs={'mid': movie.id}),
+        }})
     except Movie.DoesNotExist:
         return JsonResponse({'error': 'Movie does not exists'})
+    except IntegrityError:
+        return JsonResponse({'error': 'Movie is already in the watchlist'})
 
-    return JsonResponse({})
 
 @login_required
 def watchlist_remove(request):
-    json_data = json.loads(request.data.read())
-    WatchlistItem.filter(user=request.user, pk=json_data['id']).delete()
+    json_data = json.loads(request.read().decode())
+    try:
+        movie = Movie.objects.get(pk=json_data['movie'])
+        WatchlistItem.objects.filter(user=request.user, movie=movie).delete()
+    except Movie.DoesNotExist:
+        pass
     return JsonResponse({})
 
 
 @login_required
 def watchlist_list(request):
     return JsonResponse({
-        'movies': list(WatchlistItem.objects.filter(user=request.user))
+        'movies': [{
+            'id': item.movie.id,
+            'title': item.movie.title,
+            'poster': item.movie.poster.url if item.movie.poster else '',
+            'url': reverse('watch', kwargs={'mid': item.movie.id}),
+        } for item in WatchlistItem.objects.filter(user=request.user)]
     })

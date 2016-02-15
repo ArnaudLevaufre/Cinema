@@ -393,3 +393,41 @@ form ul.errorlist{
         text-shadow: 0 0 10px hsla(0,0%,0%,0)
     }
 }
+
+#watchlist{
+    margin: 1em 1em 2em 1em;
+    background-color: hsla(0, 0%, 0%, 0.1);
+    display: none;
+    overflow: hidden;
+}
+
+#watchlist > div:nth-child(2){
+    display: flex;
+    width: calc(100% - 10em);
+    transition: margin linear 0.25s;
+}
+
+#watchlist .arrow{
+    display: flex;
+    align-items: center;
+    padding: 2em;
+    z-index: 50;
+    width: 5em;
+    cursor: pointer;
+    transition: margin linear 0.25s;
+    color: white;
+}
+
+#watchlist .arrow i{
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+}
+
+#watchlist .arrow.left{
+    background-image: linear-gradient(to right, #2c3a3f, hsla(0, 0%, 0%, 0));
+}
+
+#watchlist .arrow.right{
+    background-image: linear-gradient(to left, #2c3a3f, hsla(0, 0%, 0%, 0));
+}

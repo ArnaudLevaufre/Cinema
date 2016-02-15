@@ -56,5 +56,8 @@ class WatchlistItem(models.Model):
     movie = models.ForeignKey(Movie)
     user = models.ForeignKey(User)
 
+    class Meta:
+        unique_together = ('movie', 'user')
+
     def __str__(self):
         return "Watchlist item %s for user %s" % (self.movie, self.user)
