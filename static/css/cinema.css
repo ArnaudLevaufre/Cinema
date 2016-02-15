@@ -403,7 +403,7 @@ form ul.errorlist{
 
 #watchlist > div:nth-child(2){
     display: flex;
-    width: calc(100% - 10em);
+    min-width: calc(100% - 10em);
     transition: margin linear 0.25s;
 }
 

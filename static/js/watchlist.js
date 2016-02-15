@@ -69,15 +69,20 @@
         this.scroll = 0;
 
         this.rightArrow.addEventListener('click', function(){
-            this.scroll -= 200;
-            this.container.style.marginLeft = this.scroll + 'px';
-            this.rightArrow.style.marginLeft = -this.scroll + 'px';
+            if(this.scroll  > -this.items.length * 200 + this.container.offsetWidth){
+                console.log("ok");
+                this.scroll -= 200;
+                this.container.style.marginLeft = this.scroll + 'px';
+                this.rightArrow.style.marginLeft = -this.scroll + 'px';
+            }
         }.bind(this));
 
         this.leftArrow.addEventListener('click', function(){
-            this.scroll += 200;
-            this.container.style.marginLeft = this.scroll + 'px';
-            this.rightArrow.style.marginLeft = -this.scroll + 'px';
+            if(this.scroll < 0){
+                this.scroll += 200;
+                this.container.style.marginLeft = this.scroll + 'px';
+                this.rightArrow.style.marginLeft = -this.scroll + 'px';
+            }
         }.bind(this));
 
     }
