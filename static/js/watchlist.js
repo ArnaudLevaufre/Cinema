@@ -70,7 +70,6 @@
 
         this.rightArrow.addEventListener('click', function(){
             if(this.scroll  > -this.items.length * 200 + this.container.offsetWidth){
-                console.log("ok");
                 this.scroll -= 200;
                 this.container.style.marginLeft = this.scroll + 'px';
                 this.rightArrow.style.marginLeft = -this.scroll + 'px';
