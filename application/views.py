@@ -92,14 +92,6 @@ def random_movie(request):
 
 
 @login_required
-def watchlist(request):
-    ctx = {
-        'watchlist': [wli.movie for wli in WatchlistItem.objects.filter(user=request.user)]
-    }
-    return render(request, 'watchlist.html', ctx)
-
-
-@login_required
 def watchlist_add(request):
     json_data = json.loads(request.read().decode())
     try:
