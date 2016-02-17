@@ -23,9 +23,9 @@ movie database from any device by direct download or streaming.
 - Notifications of newly available movies
 - Random movie
 - Search
+- watchlist
 
 ### Planned features
-- watchlist
 - favorite movies
 - additional movie information (actors, producer ...)
 - ...
