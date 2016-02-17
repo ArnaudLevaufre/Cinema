@@ -8,6 +8,8 @@ movie database from any device by direct download or streaming.
 
 ![](https://img.bananium.fr/arnaud/cinema_watch.png)
 
+![](https://img.bananium.fr/arnaud/cinema_watchlist.png)
+
 
 ## Features
 
