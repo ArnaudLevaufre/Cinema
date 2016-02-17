@@ -4,12 +4,6 @@ Cinema is a web application which provide a fancy movie library. Wether you run
 it on your local network or on a public server it gives you access to your
 movie database from any device by direct download or streaming.
 
-![](https://img.bananium.fr/arnaud/cinema_home.png)
-
-![](https://img.bananium.fr/arnaud/cinema_watch.png)
-
-![](https://img.bananium.fr/arnaud/cinema_watchlist.png)
-
 
 ## Features
 
@@ -29,6 +23,16 @@ movie database from any device by direct download or streaming.
 - favorite movies
 - additional movie information (actors, producer ...)
 - ...
+
+## Screenshots
+
+![](https://img.bananium.fr/arnaud/cinema_home.png)
+
+![](https://img.bananium.fr/arnaud/cinema_watch.png)
+
+![](https://img.bananium.fr/arnaud/cinema_watchlist.png)
+
+
 
 ## Installation
 ### Requirements
