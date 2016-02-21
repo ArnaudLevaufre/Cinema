@@ -19,7 +19,9 @@
                     <h4>{{ movie.title }}</h4>
                     <div class="actions">
                         <a href="{% url 'watch' mid=movie.pk %}" title="Watch movie"><i class="fa fa-play"></i></a>
-                        <a href="#" title="Add to watchlist" onclick="watchlist.add({{ movie.id }});return false;"><i class="fa fa-plus"></i></a>
+                        {% if user.is_authenticated %}
+                            <a href="#" title="Add to watchlist" onclick="watchlist.add({{ movie.id }});return false;"><i class="fa fa-plus"></i></a>
+                        {% endif %}
                         <a href="{{ movie.path_to_static }}" title="Download" download><i class="fa fa-download"></i></a>
                     </div>
                 </div>

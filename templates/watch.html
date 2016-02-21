@@ -44,7 +44,9 @@
     <div>
         <h1>{{ movie.title }} </h1>
         <div class="actions">
-            <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
+            {% if user.is_authenticated %}
+                <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
+            {% endif %}
             <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
             {% if movie.imdbid %}
                 <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
