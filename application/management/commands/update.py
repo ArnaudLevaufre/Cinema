@@ -2,6 +2,8 @@ import os
 import json
 import datetime
 import re
+import asyncio
+import aiohttp
 from word2number import w2n
 from guessit import guess_movie_info
 from urllib.request import urlopen
@@ -9,7 +11,6 @@ from urllib.parse import urlencode
 from django.core.management.base import BaseCommand
 from application.models import Movie, NewMovieNotification, MovieDirectory
 from django.conf import settings
-from django.db.utils import IntegrityError
 from django.utils import timezone
 
 MOVIES_EXT = [
@@ -18,16 +19,22 @@ MOVIES_EXT = [
     '.avi',
     '.flv',
     '.mov',
+    '.webm',
 ]
 
-def save_poster(poster_url):
+def write_file(filename, data):
+    with open(os.path.join(settings.MEDIA_ROOT, "posters", filename), "wb") as f:
+        f.write(data)
+
+
+async def save_poster(poster_url):
     if not poster_url:
         return ""
-    with urlopen(poster_url) as request:
+    loop = asyncio.get_event_loop()
+    async with OMDBAPI.client.get(poster_url) as resp:
         filename = os.path.basename(poster_url)
-        with open(os.path.join(settings.MEDIA_ROOT, "posters", filename), "wb") as f:
-            f.write(request.read())
-            return os.path.join("posters", filename)  # return media url
+        loop.call_soon(write_file, filename, await resp.read())
+        return os.path.join("posters", filename)  # return media url
 
 class Report:
     fail = 0
@@ -69,8 +76,9 @@ class Report:
 
 
 class OMDBAPI:
+    client = None
     @staticmethod
-    def search(name):
+    async def search(name):
         infos = guess_movie_info(name)
         if not infos.get('title'):
             return
@@ -79,72 +87,72 @@ class OMDBAPI:
         except KeyError:
             params = urlencode({'s': infos['title'], 'type': 'movie', 'r': 'json'})
         url = 'http://www.omdbapi.com/?%s' % params
-        with urlopen(url) as request:
-            resp = json.loads(request.read().decode())
+
+        async with OMDBAPI.client.get(url) as resp:
+            resp = json.loads(await resp.text())
             if "Search" in resp:
                 for res in resp['Search']:
                     poster = res['Poster'] if res['Poster'] != 'N/A' else ""
-                    yield Movie(
+                    return Movie(
                         title=res['Title'],
                         imdbid=res['imdbID'],
-                        poster=save_poster(poster),
+                        poster=await save_poster(poster),
                     )
+
     @staticmethod
-    def get_detailled_infos(imdbid):
+    async def get_detailled_infos(imdbid):
         params = urlencode({'i': imdbid, 'plot': 'full', 'r': 'json'})
         url = 'http://www.omdbapi.com/?%s' % params
-        with urlopen(url) as request:
-            resp = json.loads(request.read().decode())
+        async with OMDBAPI.client.get(url) as resp:
+            resp = json.loads(await resp.text())
             if resp['Response'] == 'True':
                 return resp
 
 
 class Resolver:
     SUBRESOLVERS = []
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         for klass in self.SUBRESOLVERS:
             inst = klass()
-            movie = inst.resolve(path, movie)
+            movie = await inst.resolve(path, movie)
         return movie
 
 
 class OMDBFilenameResolver(Resolver):
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         if movie.title:
             return movie
         name, ext = os.path.splitext(os.path.basename(path))
         name = name.replace('&', '')
-        match = OMDBAPI.search(os.path.basename(path))
-        for m in match:
+        match = await OMDBAPI.search(os.path.basename(path))
+        if match:
             Report.success += 1
-            movie.title = m.title
-            movie.imdbid = m.imdbid
-            movie.poster = m.poster
-            break
+            movie.title = match.title
+            movie.imdbid = match.imdbid
+            movie.poster = match.poster
         return movie
 
 
 class OMDBDirnameResolver(Resolver):
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         if movie.title:
             return movie
         name = os.path.basename(os.path.dirname(path))
         name = name.replace('&', '')
-        match = OMDBAPI.search(name)
-        for m in match:
+        match = await OMDBAPI.search(name)
+        if match:
             Report.success += 1
-            movie.title = m.title
-            movie.imdbid = m.imdbid
-            movie.poster = m.poster
-            break
+            movie.title = match.title
+            movie.imdbid = match.imdbid
+            movie.poster = match.poster
         return movie
 
 
 class OMDBDetailResolver(Resolver):
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         if not movie.imdbid:
             return movie
-        infos = OMDBAPI.get_detailled_infos(movie.imdbid)
+        infos = await OMDBAPI.get_detailled_infos(movie.imdbid)
         if infos.get('Plot') and not movie.plot:
             movie.plot = infos.get('Plot')
         return movie
@@ -155,12 +163,12 @@ class OMDBBullshitStripperResolver(Resolver):
         OMDBFilenameResolver,
         OMDBDirnameResolver
     ]
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         if movie.title:
             return movie
 
         path = re.sub('remastered|extended|unrated', '', path, flags=re.I)
-        return super().resolve(path, movie)
+        return await super().resolve(path, movie)
 
 
 class OMDBWord2number(Resolver):
@@ -168,7 +176,7 @@ class OMDBWord2number(Resolver):
         OMDBFilenameResolver,
         OMDBDirnameResolver
     ]
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         if movie.title:
             return movie
         words = path.split()
@@ -179,11 +187,11 @@ class OMDBWord2number(Resolver):
             except IndexError:
                 pass
         path = ' '.join(words)
-        return super().resolve(path, movie)
+        return await super().resolve(path, movie)
 
 
 class DefaultResolver(Resolver):
-    def resolve(self, path, movie):
+    async def resolve(self, path, movie):
         if movie.title:
             return movie
         Report.fail += 1
@@ -205,6 +213,7 @@ class ResolverSet(Resolver):
         DefaultResolver
     ]
 
+
 class Crawler:
 
     def __init__(self, cmd):
@@ -212,21 +221,29 @@ class Crawler:
         self.movies = [m.path for m in Movie.objects.all()]
         self.resolver_set = ResolverSet()
 
-    def crawl(self, path):
+    def crawl(self, movie_directory):
+        path = movie_directory.path
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        session = OMDBAPI.client = aiohttp.ClientSession(loop=loop)
+        tasks = []
         for dirname, subdirs, files in os.walk(path):
             for filename in files:
                 name, ext = os.path.splitext(filename)
                 path = os.path.join(dirname, filename)
                 if ext not in MOVIES_EXT:
-                    self.message(self.command.style.WARNING("UNSUPPORTED EXTENSION %s" % ext), path)
+                    loop.call_soon(self.message, self.command.style.WARNING("UNSUPPORTED EXTENSION %s" % ext), path)
                     continue
                 statinfo = os.stat(path)
                 if statinfo.st_size < 256 * 2**20:  # size < 256MB
-                    self.message(self.command.style.WARNING("SAMPLE"), path)
+                    loop.call_soon(self.message, self.command.style.WARNING("SAMPLE"), path)
                     continue
-                self.handle_file(name, path)
+                tasks.append(asyncio.ensure_future(self.handle_file(name, path)))
 
-
+        loop.run_until_complete(asyncio.wait(tasks))
+        OMDBAPI.client.close()
+        loop.close()
 
     def message(self, tag, message):
         try:
@@ -235,31 +252,25 @@ class Crawler:
             pass
 
 
-    def handle_file(self, name, path):
+    async def handle_file(self, name, path):
+        loop = asyncio.get_event_loop()
         if path in self.movies:
-            self.message(self.command.style.SUCCESS("ALREADY IN DB"), path)
+            loop.call_soon(self.message, self.command.style.SUCCESS("ALREADY IN DB"), path)
             return
 
-        movie = self.resolver_set.resolve(path, Movie())
+        movie = await self.resolver_set.resolve(path, Movie())
+
         if not movie.poster:
-            self.message(self.command.style.NOTICE('NO POSTER'), path)
+            loop.call_soon(self.message, self.command.style.NOTICE('NO POSTER'), path)
         else:
             Report.poster += 1
 
         movie.path = path
-        movie.save()
-        NewMovieNotification.notify_all(movie)
-        self.symlink(path)
-        self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
 
-    def save_poster(self, poster_url):
-        if not poster_url:
-            return ""
-        with urlopen(poster_url) as request:
-            filename = os.path.basename(poster_url)
-            with open(os.path.join(settings.MEDIA_ROOT, "posters", filename), "wb") as f:
-                f.write(request.read())
-                return filename
+        loop.call_soon(movie.save)
+        loop.call_soon(NewMovieNotification.notify_all, movie)
+        loop.call_soon(self.symlink, path)
+        loop.call_soon(self.message, self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
 
     def symlink(self, path):
         destination = os.path.join(settings.MEDIA_ROOT, 'films', os.path.basename(path))
@@ -274,8 +285,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         Report.start()
         crawler = Crawler(self)
-        for directory in MovieDirectory.objects.all():
-            crawler.crawl(directory.path)
-            directory.last_refresh = timezone.now()
-            directory.save()
+
+        for d in MovieDirectory.objects.all():
+            crawler.crawl(d)
+
         Report.display()
