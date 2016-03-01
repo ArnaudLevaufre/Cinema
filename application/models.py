@@ -33,6 +33,12 @@ class Movie(models.Model):
         ordering = ['title']
 
 
+class MovieRequest(models.Model):
+    title = models.CharField(max_length=100)
+
+    def __str__(self):
+        return "Movie request for %s" % self.title
+
 class NewMovieNotification(models.Model):
     movie = models.ForeignKey(Movie)
     user = models.ForeignKey(User)

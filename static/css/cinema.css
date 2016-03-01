@@ -24,6 +24,26 @@ body{
     color: hsla(0, 100%, 100%, 0.5);
 }
 
+hr{
+    background-color: red;
+    border: none;
+    height: 1px;
+    background-color: hsla(0,100%,100%,0.05);
+    margin: 2em 0;
+}
+
+ul{
+    list-style: none;
+    padding: 0;
+}
+
+li{
+    padding: 1em;
+    background-color: hsla(0,100%,100%,0.015);
+    margin: 1em 0;
+
+}
+
 .flex_container{
     display: flex;
 }

@@ -36,7 +36,8 @@
             <div class="user_actions">
                 <a href="{% url 'random' %}" title="Random"><i class="fa fa-random"></i></a>
                 {% if request.user.is_authenticated %}
-                    <a href="#watchlist" title="Watchlist" onclick="watchlist.toggle();return false;"><i class="fa fa-eye"></i></a>
+                    <a href="#watchlist" title="Watchlist" onclick="watchlist.toggle();return false;"><i class="fa fa-play"></i></a>
+                    <a href="{% url 'movie_request' %}" title="Request a movie"><i class="fa fa-plus"></i></a>
                     {% if new_movie_notifications %}
                         <a href="{% url 'new_movies' %}" title="New movies" class="active_notification"><i class="fa fa-bell"></i></a>
                     {% else %}

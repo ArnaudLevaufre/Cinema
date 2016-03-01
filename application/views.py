@@ -6,10 +6,10 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.core.urlresolvers import reverse
-from .models import Movie, NewMovieNotification, WatchlistItem
+from .models import Movie, NewMovieNotification, WatchlistItem, MovieRequest
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from .forms import UserForm
+from .forms import UserForm, MovieRequestForm
 
 
 def index(request):
@@ -130,3 +130,19 @@ def watchlist_list(request):
             'url': reverse('watch', kwargs={'mid': item.movie.id}),
         } for item in WatchlistItem.objects.filter(user=request.user)]
     })
+
+@login_required
+def movie_request(request):
+    if request.method == 'POST':
+        form = MovieRequestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('movie_request')
+    else:
+        form = MovieRequestForm()
+
+    ctx = {
+        'form': form,
+        'movie_requests': MovieRequest.objects.all(),
+    }
+    return render(request, 'request.html', ctx)

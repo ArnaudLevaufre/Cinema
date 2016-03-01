@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block main %}
+    <ul>
+        {% for movie_request in movie_requests %}
+            <li>{{ movie_request.title }}</li>
+        {% endfor %}
+    </ul>
+
+    <hr/>
+    <form action="{{ request.path }}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>Post request</button>
+    </form>
+{% endblock %}

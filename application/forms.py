@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from .models import MovieRequest
 
 
 class UserForm(ModelForm):
@@ -11,3 +12,8 @@ class UserForm(ModelForm):
             'last_name',
             'first_name',
         ]
+
+class MovieRequestForm(ModelForm):
+    class Meta:
+        model = MovieRequest
+        fields = '__all__'

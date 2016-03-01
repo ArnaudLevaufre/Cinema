@@ -10,4 +10,5 @@ urlpatterns = [
     url('^watchlist/add$', views.watchlist_add, name='watchlist_add'),
     url('^watchlist/remove$', views.watchlist_remove, name='watchlist_remove'),
     url('^watchlist/list$', views.watchlist_list, name='watchlist_list'),
+    url('^request$', views.movie_request, name='movie_request'),
 ]
