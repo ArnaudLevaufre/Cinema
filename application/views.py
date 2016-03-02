@@ -136,7 +136,9 @@ def movie_request(request):
     if request.method == 'POST':
         form = MovieRequestForm(request.POST)
         if form.is_valid():
-            form.save()
+            movie_request = form.save(commit=False)
+            movie_request.user = request.user
+            movie_request.save()
             return redirect('movie_request')
     else:
         form = MovieRequestForm()

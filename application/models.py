@@ -35,6 +35,7 @@ class Movie(models.Model):
 
 class MovieRequest(models.Model):
     title = models.CharField(max_length=100)
+    user = models.ForeignKey(User, default=None, null=True)
 
     def __str__(self):
         return "Movie request for %s" % self.title

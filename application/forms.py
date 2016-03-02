@@ -16,4 +16,4 @@ class UserForm(ModelForm):
 class MovieRequestForm(ModelForm):
     class Meta:
         model = MovieRequest
-        fields = '__all__'
+        fields = ['title']
