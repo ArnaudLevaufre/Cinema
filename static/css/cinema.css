@@ -32,16 +32,15 @@ hr{
     margin: 2em 0;
 }
 
-ul{
+.requests{
     list-style: none;
     padding: 0;
 }
 
-li{
+.requests li{
     padding: 1em;
     background-color: hsla(0,100%,100%,0.015);
     margin: 1em 0;
-
 }
 
 .flex_container{
@@ -325,7 +324,7 @@ form ul.errorlist{
     margin: -2em 1em 0 1em;
     position: absolute;
     width: calc(100% - 4em);
-    z-index: 20;
+    z-index: 100;
     background-color: #333;
     box-shadow: 0 2px 1px hsla(0, 0%, 0%, 0.2);
 }
