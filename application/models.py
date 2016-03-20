@@ -37,6 +37,9 @@ class MovieRequest(models.Model):
     title = models.CharField(max_length=100)
     user = models.ForeignKey(User, default=None, null=True)
 
+    class Meta:
+        ordering = ['title']
+
     def __str__(self):
         return "Movie request for %s" % self.title
 
