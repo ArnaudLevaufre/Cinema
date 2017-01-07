@@ -1,3 +1,4 @@
+aiohttp==1.2.0
 babelfish==0.5.5
 Django==1.10.5
 guessit==2.1.1

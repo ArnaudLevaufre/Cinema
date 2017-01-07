@@ -1,9 +1,10 @@
 import os
 import re
 
+import guessit
+
 from application.models import Movie, NewMovieNotification, MovieDirectory
 from application.omdbapi import OMDBAPI
-from guessit import guess_movie_info
 from word2number import w2n
 
 
@@ -103,7 +104,7 @@ class DefaultResolver(Resolver):
             return movie
         #Report.fail += 1
         name, ext = os.path.splitext(os.path.basename(path))
-        infos = guess_movie_info(name)
+        infos = guessit.guessit(name)
         if infos.get('title'):
             return Movie(title=infos['title'])
         else:

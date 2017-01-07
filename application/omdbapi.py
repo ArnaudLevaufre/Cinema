@@ -2,10 +2,11 @@ import aiohttp
 import json
 import os
 
+import guessit
+
 from application.models import Movie, NewMovieNotification, MovieDirectory
 from django.conf import settings
 from django.utils import timezone
-from guessit import guess_movie_info
 from urllib.parse import urlencode
 
 def write_file(filename, data):
@@ -29,7 +30,7 @@ class OMDBAPI:
         self.aiohttp_session = aiohttp_session
 
     async def search(self, name):
-        infos = guess_movie_info(name)
+        infos = guessit.guessit(name)
         if not infos.get('title'):
             return
         try:
