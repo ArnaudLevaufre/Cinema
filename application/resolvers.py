@@ -1,10 +1,14 @@
+import asyncio
 import os
 import re
+import subprocess
 
+import av
 import guessit
 
-from application.models import Movie, NewMovieNotification, MovieDirectory
+from application.models import Movie, NewMovieNotification, MovieDirectory, Subtitle
 from application.omdbapi import OMDBAPI
+from django.conf import settings
 from word2number import w2n
 
 
@@ -30,7 +34,7 @@ class OMDBBaseResolver(Resolver):
 
 class OMDBFilenameResolver(OMDBBaseResolver):
     async def resolve(self, path, movie):
-        if movie.title:
+        if movie.title and movie.poster:
             return movie
         name, ext = os.path.splitext(os.path.basename(path))
         name = name.replace('&', '')
@@ -44,7 +48,7 @@ class OMDBFilenameResolver(OMDBBaseResolver):
 
 class OMDBDirnameResolver(OMDBBaseResolver):
     async def resolve(self, path, movie):
-        if movie.title:
+        if movie.title and movie.poster:
             return movie
         name = os.path.basename(os.path.dirname(path))
         name = name.replace('&', '')
@@ -98,6 +102,60 @@ class OMDBWord2number(OMDBBaseResolver):
         return await super().resolve(path, movie)
 
 
+class SubtitleResolver(Resolver):
+    async def resolve(self, path, movie):
+        with os.scandir(os.path.dirname(path)) as it:
+            for entry in it:
+                if entry.is_file():
+                    await self.import_sub(entry.path, movie)
+        return movie
+
+    async def import_sub(self, path, movie):
+        movie.save() # Make sure movie object is created
+
+        name, ext = os.path.splitext(os.path.basename(path))
+        if path in [s.path for s in movie.subtitles.all()]:
+            return;
+
+        if ext == '.srt':
+            dest_dir = os.path.join(settings.MEDIA_ROOT, 'subtitles', str(movie.pk))
+            dest = os.path.join(dest_dir, "%s.vtt" % name)
+            rel_name = os.path.join('subtitles', str(movie.pk), "%s.vtt" % name)
+
+            if not os.path.isdir(dest_dir):
+                print("Creating ouput dir %s" % dest_dir)
+                os.makedirs(dest_dir)
+
+            proc = await asyncio.create_subprocess_exec('ffmpeg', '-nostdin', '-i', path, dest)
+            await proc.wait()
+
+            #subprocess.call(['ffmpeg', '-nostdin', '-i', path, dest])
+            sub = Subtitle(path=path,
+                            vtt_file=rel_name,
+                            name=name,
+                            movie=movie)
+
+        else:
+            return
+
+        movie.subtitles.add(sub, bulk=False)
+
+
+class SubdirectorySubtitleResolver(SubtitleResolver):
+    async def resolve(self, path, movie):
+        import_dirs = []
+        with os.scandir(os.path.dirname(path)) as it:
+            for entry in it:
+                if entry.is_dir() and entry.name.lower() in ['subs', 'subtitles']:
+                    import_dirs.append(entry.path)
+
+        for importpath in import_dirs:
+            with os.scandir(importpath) as it:
+                for entry in it:
+                    if entry.is_file():
+                        await self.import_sub(entry.path, movie)
+        return movie
+
 class DefaultResolver(Resolver):
     async def resolve(self, path, movie):
         if movie.title:
@@ -118,6 +176,8 @@ class ResolverSet(Resolver):
         OMDBBullshitStripperResolver,
         OMDBWord2number,
         OMDBDetailResolver,
+        SubtitleResolver,
+        SubdirectorySubtitleResolver,
         DefaultResolver
     ]
 

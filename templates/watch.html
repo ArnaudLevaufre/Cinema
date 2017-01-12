@@ -7,6 +7,9 @@
         <ul class="messages">
             <li class="error">Your browser doesn't support HTML5 embeded videos.</li>
         </ul>
+        {% for sub in movie.subtitles.all %}
+            <track label="{{ sub.name }}" kind="subtitles" srclang="en" src="{{ sub.vtt_file.url }}">
+        {% endfor %}
     </video>
 
     <script>

@@ -71,3 +71,13 @@ class WatchlistItem(models.Model):
 
     def __str__(self):
         return "Watchlist item %s for user %s" % (self.movie, self.user)
+
+
+class Subtitle(models.Model):
+    path = models.TextField()
+    vtt_file = models.FileField(upload_to="subtitles", null=True, blank=True)
+    name = models.TextField()
+    movie = models.ForeignKey(Movie, related_name="subtitles")
+
+    def __str__(self):
+        return self.name

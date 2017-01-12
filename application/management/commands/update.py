@@ -60,7 +60,7 @@ class Crawler:
         self.loop = loop
         self.aiohttp_session = aiohttp_session
         self.report = report
-        self.movies = [m.path for m in Movie.objects.all()]
+        self.movies = {m.path: m for m in Movie.objects.all()}
         self.resolver_set = ResolverSet(loop, aiohttp_session)
 
     def queue_update_tasks(self, movie_directory, tasks):
@@ -86,11 +86,15 @@ class Crawler:
             pass
 
     async def handle_file(self, name, path):
-        if path in self.movies:
-            self.loop.call_soon(self.message, self.command.style.SUCCESS("ALREADY IN DB"), path)
-            return
+        if path in self.movies.keys():
+            # update old movies data.
+            movie = self.movies[path]
+            update = True
+        else:
+            movie = Movie()
+            update = False
 
-        movie = await self.resolver_set.resolve(path, Movie())
+        movie = await self.resolver_set.resolve(path, movie)
 
         if not movie.poster:
             self.loop.call_soon(self.message, self.command.style.NOTICE('NO POSTER'), path)
@@ -101,9 +105,12 @@ class Crawler:
         movie.path = path
 
         self.loop.call_soon(movie.save)
-        self.loop.call_soon(NewMovieNotification.notify_all, movie)
-        self.loop.call_soon(self.symlink, path)
-        self.loop.call_soon(self.message, self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
+        if not update:
+            self.loop.call_soon(NewMovieNotification.notify_all, movie)
+            self.loop.call_soon(self.symlink, path)
+            self.loop.call_soon(self.message, self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
+        else:
+            self.loop.call_soon(self.message, self.command.style.SUCCESS("UPDATED"), "%s as %s" % (path, movie.title))
 
     def symlink(self, path):
         destination = os.path.join(settings.MEDIA_ROOT, 'films', os.path.basename(path))
@@ -132,5 +139,9 @@ class Command(BaseCommand):
         loop.run_until_complete(asyncio.wait(tasks))
         aiohttp_session.close()
         loop.close()
+
+        # Delete movies with no path. Those entries are made possible since
+        # movies can be saved in the resolvers.
+        Movie.objects.filter(path="").delete()
 
         report.display()
