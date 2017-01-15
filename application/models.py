@@ -74,7 +74,7 @@ class WatchlistItem(models.Model):
 
 
 class Subtitle(models.Model):
-    path = models.TextField()
+    path = models.TextField(null=True, blank=True)
     vtt_file = models.FileField(upload_to="subtitles", null=True, blank=True)
     name = models.TextField()
     movie = models.ForeignKey(Movie, related_name="subtitles")
