@@ -130,7 +130,8 @@ class Command(BaseCommand):
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        aiohttp_session = aiohttp.ClientSession(loop=loop)
+        connector = aiohttp.TCPConnector(limit=settings.AIOHTTP_LIMIT, force_close=True, loop=loop)
+        aiohttp_session = aiohttp.ClientSession(loop=loop, connector=connector)
         tasks = []
 
         crawler = Crawler(self, loop, aiohttp_session, report)
