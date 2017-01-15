@@ -87,6 +87,8 @@ class Crawler:
 
     async def handle_file(self, name, path):
         if path in self.movies.keys():
+            if not settings.ALLOW_DB_UPDATE:
+                return
             # update old movies data.
             movie = self.movies[path]
             update = True

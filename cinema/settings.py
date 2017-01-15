@@ -136,3 +136,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
 LOGIN_REQUIRED = True
+ALLOW_DB_UPDATE = False
