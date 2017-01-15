@@ -40,30 +40,18 @@ class OMDBAPI:
             params = urlencode({'s': infos['title'], 'type': 'movie', 'r': 'json'})
         url = 'http://www.omdbapi.com/?%s' % params
 
-        attempts_left = 5
-        while attempts_left > 0:
-
-            try:
-                async with self.aiohttp_session.get(url, timeout=5) as resp:
-                    resp = json.loads(await resp.text())
-                    if "Search" in resp:
-                        for res in resp['Search']:
-                            poster = res['Poster'] if res['Poster'] != 'N/A' else ""
-                            return Movie(
-                                title=res['Title'],
-                                imdbid=res['imdbID'],
-                                poster=await save_poster(poster, self.loop, self.aiohttp_session),
-                            )
-            except (aiohttp.errors.ClientResponseError,
-                    aiohttp.errors.ClientRequestError,
-                    aiohttp.errors.ClientOSError,
-                    aiohttp.errors.ClientDisconnectedError,
-                    aiohttp.errors.ServerDisconnectedError,
-                    aiohttp.errors.ClientTimeoutError,
-                    asyncio.TimeoutError,
-                    aiohttp.errors.HttpProcessingError,
-                    json.decoder.JSONDecodeError):
-                attempts_left -= 1
+        async with self.aiohttp_session.get(url) as resp:
+            data = await resp.text()
+            print(url, data)
+            resp = json.loads(data)
+            if "Search" in resp:
+                for res in resp['Search']:
+                    poster = res['Poster'] if res['Poster'] != 'N/A' else ""
+                    return Movie(
+                        title=res['Title'],
+                        imdbid=res['imdbID'],
+                        poster=await save_poster(poster, self.loop, self.aiohttp_session),
+                    )
 
     async def get_detailled_infos(self, imdbid):
         params = urlencode({'i': imdbid, 'plot': 'full', 'r': 'json'})
