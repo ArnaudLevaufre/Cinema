@@ -3,7 +3,6 @@ import os
 import re
 import subprocess
 
-import av
 import guessit
 
 from application.models import Movie, NewMovieNotification, MovieDirectory, Subtitle

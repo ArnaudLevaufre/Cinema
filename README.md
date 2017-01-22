@@ -18,6 +18,7 @@ movie database from any device by direct download or streaming.
 - Random movie
 - Search
 - watchlist
+- Subtitle support (.vtt file for django adminstration and .srt file for automatic indexing)
 
 ### Planned features
 - favorite movies
@@ -37,7 +38,7 @@ movie database from any device by direct download or streaming.
 ## Installation
 ### Requirements
 
-You will need python 3.x and pip.
+You will need python 3.x, pip and ffmpeg.
 
 First clone the project then procede to install the dependencies like so
 
