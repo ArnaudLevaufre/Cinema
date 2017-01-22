@@ -181,7 +181,7 @@ hr{
     box-shadow: 0 0 2px hsla(0, 0%, 0%, 0.05);
 }
 
-.movie .actions a{
+.movie .actions > a{
     color: black;
     display: block;
     padding: 1em;
@@ -190,7 +190,7 @@ hr{
     flex: 1 1 auto;
 }
 
-.movie .actions a:hover{
+.movie .actions > a:hover{
     background-color: hsla(0, 100%, 100%, 0.35);
 }
 
@@ -245,15 +245,16 @@ h1{
     margin: 1em 0;
 }
 
-.description .actions a{
+.description .actions > a, .description .actions > div{
     display: inline-block;
     background-color: hsla(0, 100%, 100%, 0.05);
     padding: 1em 1.5em;
     text-decoration: none;
     color: hsla(0, 100%, 100%, 0.25);
+    cursor: pointer;
 }
 
-.description .actions a:hover{
+.description .actions a:hover, .description .actions > div:hover{
     background-color: hsla(0, 100%, 100%, 0.075);
 }
 
@@ -449,4 +450,25 @@ form ul.errorlist{
 
 #watchlist .arrow.right{
     background-image: linear-gradient(to left, #2c3a3f, hsla(0, 0%, 0%, 0));
+}
+
+.dropdown > main {
+    position: absolute;
+}
+
+.dropdown > main {
+    margin-top: 1em;
+    margin-left: -1.5em;
+    background-color: #333;
+}
+
+.dropdown > main > a{
+    display: block;
+    padding: 0.5em;
+    color: hsla(0, 100%, 100%, 0.5);
+    text-decoration: none;
+}
+
+.dropdown > main > a:hover{
+    background-color: hsla(0, 0%, 0%, 0.25);
 }
