@@ -51,10 +51,6 @@
                 <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
             {% endif %}
             <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
-            {% if movie.imdbid %}
-                <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
-            {% endif %}
-
             {% if movie.subtitles.all %}
                 <div class="dropdown">
                     <header title="Download subtitles"><i class="fa fa-cc"></i></header>
@@ -64,6 +60,9 @@
                         {% endfor %}
                     </main>
                 </div>
+            {% endif %}
+            {% if movie.imdbid %}
+                <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
             {% endif %}
         </div>
         {% if movie.plot %}
