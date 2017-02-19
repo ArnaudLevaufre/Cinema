@@ -1,15 +1,16 @@
-import random
-import json
-from django.core.exceptions import MultipleObjectsReturned
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from django.db import transaction
-from django.db.utils import IntegrityError
-from django.core.urlresolvers import reverse
-from .models import Movie, NewMovieNotification, WatchlistItem, MovieRequest
+from .forms import UserForm, MovieRequestForm
+from .models import Movie, NewMovieNotification, WatchlistItem, MovieRequest, MoviesFeed
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from .forms import UserForm, MovieRequestForm
+from django.contrib.auth.models import User
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.urlresolvers import reverse
+from django.db import transaction
+from django.db.utils import IntegrityError
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+import json
+import random
 
 
 def index(request):
@@ -148,3 +149,10 @@ def movie_request(request):
         'movie_requests': MovieRequest.objects.all(),
     }
     return render(request, 'request.html', ctx)
+
+
+@login_required
+def regen_key(request):
+    request.user.profile.regen_key()
+    return redirect('profile')
+

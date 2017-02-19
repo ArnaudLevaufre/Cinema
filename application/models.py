@@ -1,9 +1,15 @@
-from django.db import models
-import os
 from django.conf import settings
-from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib.syndication.views import Feed
+from django.db import models
 from django.db import transaction
+from django.db.models.signals import post_save
+from django.http import HttpResponse
+from django.dispatch import receiver
+from django.utils import timezone
+from django.core.urlresolvers import reverse
+import os
+import uuid
 
 
 class MovieDirectory(models.Model):
@@ -81,3 +87,51 @@ class Subtitle(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    api_key = models.UUIDField(blank=True, null=True)
+
+    def regen_key(self):
+        self.api_key = uuid.uuid4()
+        self.save()
+
+
+@receiver(post_save, sender=User)
+def create_favorites(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+class MoviesFeed(Feed):
+    title = "Last movies"
+    link = "/rss"
+
+    def __call__(self, request, *args, **kwargs):
+        key = request.GET.get('key')
+        if not key:
+            return HttpResponse(status=401)
+
+        for user in User.objects.all():
+            if key == str(user.profile.api_key):
+                break
+        else:
+            return HttpResponse(status=401)
+        return super().__call__(request, *args, **kwargs)
+
+    def items(self):
+        return Movie.objects.order_by('-created')[:25]
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.plot
+
+    def item_link(self, item):
+        return reverse('watch', kwargs={'mid': item.id})
+
+    def item_pubdate(self, item):
+        return item.created
+

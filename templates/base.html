@@ -13,6 +13,9 @@
         <script src="{% static 'js/dropdown.js' %}"></script>
         {% if user.is_authenticated %}
             <script src="{% static 'js/watchlist.js' %}"></script>
+            {% if user.profile.api_key %}
+                <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{% url 'rss' %}?key={{ user.profile.api_key }}" />
+            {% endif %}
         {% endif %}
     </head>
     <body>
