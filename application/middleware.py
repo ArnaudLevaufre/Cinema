@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 
 class AccessMiddleware:
     def process_request(self, request):
-        if request.path == reverse('login'):
+        if request.path in [reverse('login'), reverse('rss')]:
             return
 
         if settings.LOGIN_REQUIRED and not request.user.is_authenticated():
