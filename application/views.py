@@ -148,3 +148,9 @@ def movie_request(request):
         'movie_requests': MovieRequest.objects.all(),
     }
     return render(request, 'request.html', ctx)
+
+@login_required
+def regen_key(request):
+    request.user.profile.regen_key()
+    return redirect('profile')
+

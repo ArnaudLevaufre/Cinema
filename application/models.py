@@ -1,9 +1,12 @@
-from django.db import models
-import os
 from django.conf import settings
-from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db import models
 from django.db import transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils import timezone
+import os
+import uuid
 
 
 class MovieDirectory(models.Model):
@@ -81,3 +84,19 @@ class Subtitle(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    api_key = models.UUIDField(blank=True, null=True)
+
+    def regen_key(self):
+        self.api_key = uuid.uuid4()
+        self.save()
+
+
+@receiver(post_save, sender=User)
+def create_favorites(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+

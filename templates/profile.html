@@ -16,5 +16,13 @@
     <button>Save</button>
 </form>
 
+<h1>API key</h1>
+    {% if user.profile.api_key %}
+        {{ user.profile.api_key }}
+    {% endif %}
+
+    <form action="{% url 'regen_key' %}">
+        <button>Regenerate</button>
+    </form>
 
 {% endblock %}
