@@ -8,7 +8,7 @@
             <div class="movie">
                 <div class="poster_container">
                 {% if movie.poster %}
-                    <div class="poster" style="background-image: url('{{ movie.poster.url }}');">
+                    <div class="poster" data-background="{{ movie.poster.url }}">
                 {% else %}
                     <div class="poster">
                 {% endif %}
@@ -28,4 +28,7 @@
             </div>
         {% endfor %}
     </div>
+    <script>
+        window.lazy_load = new LazyLoad();
+    </script>
 {% endblock %}
