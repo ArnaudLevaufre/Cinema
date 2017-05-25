@@ -57,6 +57,7 @@
             }
 
             log("Update time: " + (new Date() - start) + "ms");
+            window.lazy_load.handleScroll();
         },
     };
 

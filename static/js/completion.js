@@ -10,7 +10,6 @@
         this.container = document.createElement('div');
         if(this.poster){
             this.img = document.createElement('img');
-            this.img.src = this.poster;
         }
         else{
             this.img = document.createElement('div');
@@ -26,6 +25,7 @@
     Movie.prototype = {
         show: function(){
             this.container.style.display = "block";
+            this.img.src = this.poster;
         },
 
         hide: function(){
@@ -70,10 +70,12 @@
         },
 
         filter: function(text){
+            var nb_shown = 0;
             var reg = new RegExp(text, 'i');
             for(var movie of this.movies){
-                if(reg.test(movie.title)){
+                if(reg.test(movie.title) && nb_shown < 10){
                     movie.show();
+                    nb_shown++;
                 }
                 else{
                     movie.hide();
@@ -122,7 +124,6 @@
                     movies[index].deselect();
                 }
             }
-
         },
 
         watch: function(){
