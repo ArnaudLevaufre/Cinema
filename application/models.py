@@ -127,6 +127,8 @@ class MoviesFeed(Feed):
         return item.title
 
     def item_description(self, item):
+        if item.poster:
+            return "<div><img src={}/><p>{}</p></div>".format(item.poster.url, item.plot)
         return item.plot
 
     def item_link(self, item):
