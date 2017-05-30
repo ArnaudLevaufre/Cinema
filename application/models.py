@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 import os
 import uuid
+import urllib
 
 
 class MovieDirectory(models.Model):
@@ -128,11 +129,11 @@ class MoviesFeed(Feed):
 
     def item_description(self, item):
         if item.poster:
-            return "<div><img src=\"{}\"/><p>{}</p></div>".format(item.poster.url, item.plot)
+            return "<div><img src=\"{}\"/><p>{}</p></div>".format(urllib.parse.urljoin(settings.DOMAIN, item.poster.url), item.plot)
         return item.plot
 
     def item_link(self, item):
-        return reverse('watch', kwargs={'mid': item.id})
+        return urllib.parse.urljoin(settings.DOMAIN, reverse('watch', kwargs={'mid': item.id}))
 
     def item_pubdate(self, item):
         return item.created
