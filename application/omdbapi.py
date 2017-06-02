@@ -35,9 +35,9 @@ class OMDBAPI:
         if not infos.get('title'):
             return
         try:
-            params = urlencode({'s': infos['title'], 'y': infos['year'], 'type': 'movie', 'r': 'json'})
+            params = urlencode({'s': infos['title'], 'y': infos['year'], 'type': 'movie', 'r': 'json', 'apikey': settings.OMDB_API_KEY})
         except KeyError:
-            params = urlencode({'s': infos['title'], 'type': 'movie', 'r': 'json'})
+            params = urlencode({'s': infos['title'], 'type': 'movie', 'r': 'json', 'apikey': settings.OMDB_API_KEY})
         url = 'http://www.omdbapi.com/?%s' % params
 
         async with self.aiohttp_session.get(url) as resp:
@@ -54,7 +54,7 @@ class OMDBAPI:
                     )
 
     async def get_detailled_infos(self, imdbid):
-        params = urlencode({'i': imdbid, 'plot': 'full', 'r': 'json'})
+        params = urlencode({'i': imdbid, 'plot': 'full', 'r': 'json', 'apikey': settings.OMDB_API_KEY})
         url = 'http://www.omdbapi.com/?%s' % params
         async with self.aiohttp_session.get(url) as resp:
             resp = json.loads(await resp.text())
