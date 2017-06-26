@@ -28,7 +28,7 @@ class Movie(models.Model):
     date = models.DateField(null=True, blank=True)
     created = models.DateTimeField(default=timezone.now)
     imdbid = models.CharField(max_length=9, null=True, blank=True)
-    poster = models.ImageField(upload_to="posters", null=True, blank=True)
+    poster = models.ImageField(upload_to="posters", null=True, blank=True, max_length=1024)
 
     def path_to_static(self):
         return os.path.join(settings.MEDIA_URL, 'films', os.path.basename(self.path))
