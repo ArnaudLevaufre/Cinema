@@ -1,6 +1,6 @@
 from .forms import UserForm, MovieRequestForm
 from .models import Movie, NewMovieNotification, WatchlistItem, MovieRequest, MoviesFeed
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -150,6 +150,10 @@ def movie_request(request):
     }
     return render(request, 'request.html', ctx)
 
+@permission_required("application.can_delete_movierequest")
+def delete_movie_request(request, pk):
+    MovieRequest.objects.filter(pk=pk).delete()
+    return redirect('movie_request')
 
 @login_required
 def regen_key(request):

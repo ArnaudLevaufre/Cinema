@@ -5,7 +5,11 @@
 {% block main %}
     <ul class="requests">
         {% for movie_request in movie_requests %}
-            <li>{{ movie_request.title }}</li>
+            {% if perms.application.can_delete_movierequest %}
+                <li><span>{{ movie_request.title }}</span><a href="{% url 'delete_movie_request' pk=movie_request.pk %}"><i class="fa fa-trash"></i></a></li>
+            {% else %}
+                <li><span>{{ movie_request.title }}</span></li>
+            {% endif %}
         {% endfor %}
     </ul>
 

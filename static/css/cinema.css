@@ -38,9 +38,24 @@ hr{
 }
 
 .requests li{
+    display: flex;
     padding: 1em;
     background-color: hsla(0,100%,100%,0.015);
     margin: 1em 0;
+}
+
+.requests li span{
+    flex: 1 1 auto;
+}
+
+.requests li a{
+    color: hsla(0, 100%, 100%, 0.5);
+    text-decoration: none;
+    transition: color ease 0.5s;
+}
+
+.requests li a:hover{
+    color: white;
 }
 
 .flex_container{

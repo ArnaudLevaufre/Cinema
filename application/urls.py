@@ -14,4 +14,5 @@ urlpatterns = [
     url('^watchlist/remove$', views.watchlist_remove, name='watchlist_remove'),
     url('^watchlist/list$', views.watchlist_list, name='watchlist_list'),
     url('^request$', views.movie_request, name='movie_request'),
+    url('^request/delete/(?P<pk>[0-9]+)$', views.delete_movie_request, name='delete_movie_request'),
 ]
