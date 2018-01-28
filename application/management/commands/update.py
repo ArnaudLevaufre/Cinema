@@ -139,7 +139,9 @@ class Command(BaseCommand):
         for directory in MovieDirectory.objects.all():
             crawler.queue_update_tasks(directory, tasks)
 
-        loop.run_until_complete(asyncio.wait(tasks))
+        if tasks:
+            loop.run_until_complete(asyncio.wait(tasks))
+
         aiohttp_session.close()
         loop.close()
 
