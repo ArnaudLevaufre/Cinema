@@ -5,7 +5,7 @@ import shutil
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from application.models import (MovieDirectory, Movie, MovieRequest, 
-                NewMovieNotification, WatchlistItem, Subtitle, Profile)
+                NewMovieNotification, WatchlistItem, Subtitle)
 
 
 class Command(BaseCommand):
@@ -15,7 +15,7 @@ class Command(BaseCommand):
         all_models = list(chain(MovieDirectory.objects.all(),
             Movie.objects.all(), NewMovieNotification.objects.all(), 
             MovieRequest.objects.all(), WatchlistItem.objects.all(),
-            Subtitle.objects.all(), Profile.objects.all()))
+            Subtitle.objects.all()))
 
         print(f"Delete {len(all_models)} models")
         for model in all_models:
@@ -34,9 +34,10 @@ class Command(BaseCommand):
             try:
                 if os.path.isfile(path) and not the_file.startswith('.'):
                     os.unlink(path)
-                    print("Delete file " + path)
+                    print(f"Delete file {path}")
                 elif os.path.isdir(path):
                     shutil.rmtree(path)
-                    print("Delete directory " + path)
+                    print(f"Delete directory {path}")
             except Exception as e:
-                print(e)
+                print(f"Exception while deleting {path}: {e}")
+                break
