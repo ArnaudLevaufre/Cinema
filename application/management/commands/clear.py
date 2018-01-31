@@ -12,14 +12,13 @@ class Command(BaseCommand):
     help = "Clear all Cinema data (for testing purpose)"
 
     def handle(self, *args, **options):
-        all_models = list(chain(MovieDirectory.objects.all(),
-            Movie.objects.all(), NewMovieNotification.objects.all(), 
-            MovieRequest.objects.all(), WatchlistItem.objects.all(),
-            Subtitle.objects.all()))
+        all_models = [Movie, MovieDirectory, MovieRequest, 
+                NewMovieNotification, Subtitle, WatchlistItem]
 
-        print(f"Delete {len(all_models)} models")
         for model in all_models:
-            model.delete()
+            objects_to_delete = model.objects.all()
+            print(f" Delete {len(objects_to_delete)} {model.__name__}")
+            objects_to_delete.delete()
 
         for folder in ['films', 'posters', 'subtitles']:
             self.delete_folder(folder)
