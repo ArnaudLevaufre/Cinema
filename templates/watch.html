@@ -1,6 +1,38 @@
 {% extends 'base.html'%}
 
 {% block main %}
+<div class="description">
+    {% if movie.poster %}
+        <div class="poster">
+                <img src="{{ movie.poster.url }}" alt="poster">
+        </div>
+    {% endif %}
+    <div>
+        <h1>{{ movie.title }} </h1>
+        <div class="actions">
+            {% if user.is_authenticated %}
+                <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
+            {% endif %}
+            <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
+            {% if movie.subtitles.all %}
+                <div class="dropdown">
+                    <header title="Download subtitles"><i class="fa fa-cc"></i></header>
+                    <main>
+                        {% for sub in movie.subtitles.all %}
+                            <a href="{{ sub.vtt_file.url }}" download><i class="fa fa-download"></i> {{sub.name}}</a>
+                        {% endfor %}
+                    </main>
+                </div>
+            {% endif %}
+            {% if movie.imdbid %}
+                <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
+            {% endif %}
+        </div>
+        {% if movie.plot %}
+            <p id="plot">{{ movie.plot }}</p>
+        {% endif %}
+    </div>
+</div>
 <div class="video_container">
     <video controls>
         <source src="{{ movie.path_to_static }}" type="video/mp4">
@@ -37,37 +69,5 @@
             sources[sources.length - 1].addEventListener('error', checkTypeError);
         });
     </script>
-</div>
-<div class="description">
-    {% if movie.poster %}
-        <div class="poster">
-                <img src="{{ movie.poster.url }}" alt="poster">
-        </div>
-    {% endif %}
-    <div>
-        <h1>{{ movie.title }} </h1>
-        <div class="actions">
-            {% if user.is_authenticated %}
-                <a href="#" onclick="watchlist.add({{movie.id}}); return false;"><i class="fa fa-plus"></i></a>
-            {% endif %}
-            <a href="{{ movie.path_to_static }}" download><i class="fa fa-download"></i></a>
-            {% if movie.subtitles.all %}
-                <div class="dropdown">
-                    <header title="Download subtitles"><i class="fa fa-cc"></i></header>
-                    <main>
-                        {% for sub in movie.subtitles.all %}
-                            <a href="{{ sub.vtt_file.url }}" download><i class="fa fa-download"></i> {{sub.name}}</a>
-                        {% endfor %}
-                    </main>
-                </div>
-            {% endif %}
-            {% if movie.imdbid %}
-                <a href="http://www.imdb.com/title/{{ movie.imdbid }}/" download>IMDb</a>
-            {% endif %}
-        </div>
-        {% if movie.plot %}
-            <p id="plot">{{ movie.plot }}</p>
-        {% endif %}
-    </div>
 </div>
 {% endblock %}
