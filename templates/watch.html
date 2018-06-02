@@ -17,7 +17,7 @@
             {% if movie.subtitles.all %}
                 <div class="dropdown">
                     <header title="Download subtitles"><i class="fa fa-cc"></i></header>
-                    <main>
+                    <main style="display: none">
                         {% for sub in movie.subtitles.all %}
                             <a href="{{ sub.vtt_file.url }}" download><i class="fa fa-download"></i> {{sub.name}}</a>
                         {% endfor %}
