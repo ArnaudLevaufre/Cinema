@@ -6,9 +6,12 @@ def movies(request):
     }
 
 def new_movie_notifications(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return {}
 
     return {
-        'new_movie_notifications': NewMovieNotification.objects.filter(user=request.user, read=False).count() > 0
+        'new_movie_notifications': NewMovieNotification.objects.filter(
+            user=request.user,
+            read=False
+        ).count() > 0
     }

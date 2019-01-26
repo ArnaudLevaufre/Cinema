@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.http import HttpResponse
 from django.dispatch import receiver
 from django.utils import timezone
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 import os
 import uuid
 import urllib
@@ -42,7 +42,12 @@ class Movie(models.Model):
 
 class MovieRequest(models.Model):
     title = models.CharField(max_length=100)
-    user = models.ForeignKey(User, default=None, null=True)
+    user = models.ForeignKey(
+        User,
+        default=None,
+        null=True,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ['title']
@@ -51,8 +56,8 @@ class MovieRequest(models.Model):
         return "Movie request for %s" % self.title
 
 class NewMovieNotification(models.Model):
-    movie = models.ForeignKey(Movie)
-    user = models.ForeignKey(User)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
     created = models.DateTimeField(default=timezone.now, editable=False)
 
@@ -70,8 +75,8 @@ class NewMovieNotification(models.Model):
 
 
 class WatchlistItem(models.Model):
-    movie = models.ForeignKey(Movie)
-    user = models.ForeignKey(User)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('movie', 'user')
@@ -84,7 +89,11 @@ class Subtitle(models.Model):
     path = models.TextField(null=True, blank=True)
     vtt_file = models.FileField(upload_to="subtitles", null=True, blank=True)
     name = models.TextField()
-    movie = models.ForeignKey(Movie, related_name="subtitles")
+    movie = models.ForeignKey(
+        Movie,
+        related_name="subtitles",
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return self.name

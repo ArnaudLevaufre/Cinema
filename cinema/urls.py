@@ -21,8 +21,8 @@ from django.contrib.auth import views as auth_views
 from django.contrib import admin
 
 urlpatterns = [
-    url('login/', auth_views.login, {'template_name': 'login.html', 'extra_context': {'login_required': settings.LOGIN_REQUIRED}}, name='login'),
-    url('logout/', auth_views.logout, {'next_page': '/login/'}, name='logout'),
+    url('login/', auth_views.LoginView.as_view(template_name='login.html', extra_context={'login_required': settings.LOGIN_REQUIRED}), name='login'),
+    url('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
     url('^', include('application.urls')),
     url('^admin/', admin.site.urls),
 ]
