@@ -14,17 +14,17 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from django.conf import settings
 from django.conf.urls.static import  static
 from django.contrib.auth import views as auth_views
 from django.contrib import admin
 
 urlpatterns = [
-    url('login/', auth_views.LoginView.as_view(template_name='login.html', extra_context={'login_required': settings.LOGIN_REQUIRED}), name='login'),
-    url('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
-    url('^', include('application.urls')),
-    url('^admin/', admin.site.urls),
+    re_path('login/', auth_views.LoginView.as_view(template_name='login.html', extra_context={'login_required': settings.LOGIN_REQUIRED}), name='login'),
+    re_path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
+    re_path('^', include('application.urls')),
+    re_path('^admin/', admin.site.urls),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

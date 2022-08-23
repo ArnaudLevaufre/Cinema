@@ -6,6 +6,7 @@ import asyncio
 import aiohttp
 from urllib.request import urlopen
 from urllib.parse import urlencode
+from django.core.handlers.base import sync_to_async
 from django.core.management.base import BaseCommand
 from application.models import Movie, NewMovieNotification, MovieDirectory
 from django.conf import settings
@@ -71,12 +72,12 @@ class Crawler:
                 name, ext = os.path.splitext(filename)
                 path = os.path.join(dirname, filename)
                 if ext not in MOVIES_EXT:
-                    self.loop.call_soon(self.message, self.command.style.WARNING("UNSUPPORTED EXTENSION %s" % ext), path)
+                    self.message(self.command.style.WARNING("UNSUPPORTED EXTENSION %s" % ext), path)
                     continue
                 statinfo = os.stat(path)
                 if statinfo.st_size < 256 * 2**20:  # size < 256MB
-                    self.loop.call_soon(self.message, self.command.style.WARNING("SAMPLE"), path)
                     continue
+                    self.message(self.command.style.WARNING("SAMPLE"), path)
                 tasks.append(asyncio.ensure_future(self.handle_file(name, path)))
 
     def message(self, tag, message):
@@ -99,20 +100,20 @@ class Crawler:
         movie = await self.resolver_set.resolve(path, movie)
 
         if not movie.poster:
-            self.loop.call_soon(self.message, self.command.style.NOTICE('NO POSTER'), path)
+            self.message(self.command.style.NOTICE('NO POSTER'), path)
         else:
             self.report.poster += 1
 
         self.report.success += 1
         movie.path = path
 
-        self.loop.call_soon(movie.save)
+        await sync_to_async(movie.save)()
         if not update:
-            self.loop.call_soon(NewMovieNotification.notify_all, movie)
-            self.loop.call_soon(self.symlink, path)
-            self.loop.call_soon(self.message, self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
+            await sync_to_async(NewMovieNotification.notify_all)(movie)
+            self.symlink(path)
+            self.message(self.command.style.SUCCESS("ADDED"), "%s as %s" % (path, movie.title))
         else:
-            self.loop.call_soon(self.message, self.command.style.SUCCESS("UPDATED"), "%s as %s" % (path, movie.title))
+            self.message(self.command.style.SUCCESS("UPDATED"), "%s as %s" % (path, movie.title))
 
     def symlink(self, path):
         destination = os.path.join(settings.MEDIA_ROOT, 'films', os.path.basename(path))
@@ -142,7 +143,7 @@ class Command(BaseCommand):
         if tasks:
             loop.run_until_complete(asyncio.wait(tasks))
 
-        aiohttp_session.close()
+        loop.run_until_complete(aiohttp_session.close())
         loop.close()
 
         # Delete movies with no path. Those entries are made possible since
