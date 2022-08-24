@@ -22,6 +22,7 @@ class MovieDirectory(models.Model):
 
 
 class Movie(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     path = models.TextField()
     title = models.CharField(max_length=100)
     plot = models.TextField(null=True, blank=True)
