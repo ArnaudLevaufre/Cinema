@@ -73,30 +73,30 @@ Then configure nginx so serve the static files and forward incoming travic to uw
 ```
 server {
     listen *:80;
-    # server_name cinema.example.com;
+# server_name cinema.example.com;
 
     root /path/to/project/directory/cinema;
     error_log /var/log/nginx/cinema.log crit;
 
-	location /media {
-		autoindex off;
-		alias /path/to/project/directory/cinema/media;
-	}
+    location /media {
+        autoindex off;
+        alias /path/to/project/directory/cinema/media;
+    }
 
-	location /media/films {
+    location /media/films {
         internal;
-		autoindex off;
-		alias /path/to/project/directory/cinema/media/films;
-	}
+        autoindex off;
+        alias /path/to/project/directory/cinema/media/films;
+    }
 
-	location /static {
-		autoindex off;
-		alias /path/to/project/directory/cinema/collected_static;
-	}
+    location /static {
+        autoindex off;
+        alias /path/to/project/directory/cinema/collected_static;
+    }
 
     location / {
-		include uwsgi_params;
-		uwsgi_pass 127.0.0.1:1234;
+        include uwsgi_params;
+        uwsgi_pass 127.0.0.1:1234;
     }
 }
 
