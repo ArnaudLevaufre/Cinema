@@ -1,5 +1,8 @@
+from urllib.parse import urljoin
+from django.views.static import serve
 from .forms import UserForm, MovieRequestForm
 from .models import Movie, NewMovieNotification, WatchlistItem, MovieRequest, MoviesFeed
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
@@ -91,6 +94,15 @@ def random_movie(request):
     except IndexError:
         return render(request, 'random.html')
 
+def view_movie(request, movie_uuid):
+    movie = Movie.objects.get(uuid=movie_uuid)
+    if not movie:
+        return redirect('/')
+
+    res = serve(request, movie.media_path_on_disk(), settings.MEDIA_ROOT)
+    res.headers["X-Accel-Redirect"] = urljoin(settings.MEDIA_URL, movie.media_path_on_disk())
+
+    return res
 
 @login_required
 def watchlist_add(request):

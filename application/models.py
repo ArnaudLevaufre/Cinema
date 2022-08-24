@@ -1,3 +1,4 @@
+from urllib.parse import urljoin
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.syndication.views import Feed
@@ -32,7 +33,10 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to="posters", null=True, blank=True, max_length=1024)
 
     def path_to_static(self):
-        return os.path.join(settings.MEDIA_URL, 'films', os.path.basename(self.path))
+        return urljoin('/movies/', str(self.uuid))
+
+    def media_path_on_disk(self):
+        return os.path.join('films', os.path.basename(self.path))
 
     def __str__(self):
         return self.title

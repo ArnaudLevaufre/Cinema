@@ -83,6 +83,12 @@ server {
 		alias /path/to/project/directory/cinema/media;
 	}
 
+	location /media/films {
+        internal;
+		autoindex off;
+		alias /path/to/project/directory/cinema/media/films;
+	}
+
 	location /static {
 		autoindex off;
 		alias /path/to/project/directory/cinema/collected_static;
