@@ -2,6 +2,7 @@ import asyncio
 import os
 import re
 import subprocess
+from asgiref.sync import sync_to_async
 
 import guessit
 
@@ -97,6 +98,8 @@ class OMDBWord2number(OMDBBaseResolver):
                     words[i] = str(w2n.word_to_num(word))
             except IndexError:
                 pass
+            except ValueError:
+                pass
         path = ' '.join(words)
         return await super().resolve(path, movie)
 
@@ -110,11 +113,12 @@ class SubtitleResolver(Resolver):
         return movie
 
     async def import_sub(self, path, movie):
-        movie.save() # Make sure movie object is created
+        await sync_to_async(movie.save)() # Make sure movie object is created
 
         name, ext = os.path.splitext(os.path.basename(path))
-        if path in [s.path for s in movie.subtitles.all()]:
-            return;
+        subtitles = await sync_to_async(list)(movie.subtitles.all())
+        if path in (s.path for s in subtitles):
+            return
 
         if ext == '.srt':
             dest_dir = os.path.join(settings.MEDIA_ROOT, 'subtitles', str(movie.pk))
@@ -137,7 +141,7 @@ class SubtitleResolver(Resolver):
         else:
             return
 
-        movie.subtitles.add(sub, bulk=False)
+        await sync_to_async(movie.subtitles.add)(sub, bulk=False)
 
 
 class SubdirectorySubtitleResolver(SubtitleResolver):
