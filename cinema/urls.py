@@ -14,6 +14,8 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+import os
+from urllib.parse import urljoin
 from django.urls import re_path, include
 from django.conf import settings
 from django.conf.urls.static import  static
@@ -27,4 +29,5 @@ urlpatterns = [
     re_path('^admin/', admin.site.urls),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(urljoin(settings.MEDIA_URL, 'posters'), document_root=os.path.join(settings.MEDIA_ROOT, 'posters'))
+urlpatterns += static(urljoin(settings.MEDIA_URL, 'subtitles'), document_root=os.path.join(settings.MEDIA_ROOT, 'subtitles'))

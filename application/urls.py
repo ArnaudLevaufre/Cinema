@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path, re_path
 from . import views
 from .models import MoviesFeed
 
@@ -15,4 +15,5 @@ urlpatterns = [
     re_path('^watchlist/list$', views.watchlist_list, name='watchlist_list'),
     re_path('^request$', views.movie_request, name='movie_request'),
     re_path('^request/delete/(?P<pk>[0-9]+)$', views.delete_movie_request, name='delete_movie_request'),
+    path('movies/<uuid:movie_uuid>', views.view_movie, name="view_movie"),
 ]
